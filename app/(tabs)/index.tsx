@@ -5,9 +5,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default function Index() {
 
   const pages = [
-    { href: '/', title: 'Start Game' },
+    { href: '/new-game', title: 'New Game' },
+    { href: '/team-game', title: 'Team Game' },
     { href: '/history', title: 'History' },
-    { href: '/summary', title: 'Summary' },
     { href: '/settings', title: 'Settings' },
   ];
 
@@ -16,17 +16,17 @@ export default function Index() {
   };
 
   return (
-    <SafeAreaView className="flex-1 justify-center items-center bg-[#000012]">
+    <SafeAreaView className="flex-1 items-center bg-[#111827]">
       <FlatList
         data={pages}
         renderItem={({ item }) => (
           <Pressable 
             onPress={() => handlePress(item.href)} 
-            className="bg-blue-500 px-4 py-2 rounded-lg w-[60vw]"
+            className="bg-teal-500 px-4 py-2.5 rounded-lg w-[60vw]"
           >
             <Text 
               style={{ fontFamily: "Poppins_600SemiBold" }} 
-              className="text-2xl text-white text-center"
+              className="text-lg text-white text-center"
             >
               {item.title}
             </Text>
@@ -35,8 +35,8 @@ export default function Index() {
         keyExtractor={(item) => item.href}
         contentContainerStyle={{
           gap: 15,
-          justifyContent: 'center', 
           flexGrow: 1,
+          paddingTop: 150
         }}
       />
     </SafeAreaView>
