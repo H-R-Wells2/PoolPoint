@@ -1,9 +1,10 @@
 import { useGameStore } from "@/store/game.store";
 import Feather from "@expo/vector-icons/Feather";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   Alert,
+  Keyboard,
   ScrollView,
   Text,
   TextInput,
@@ -28,6 +29,12 @@ const TeamSetupScreen: React.FC = () => {
     startGame,
   } = useGameStore();
 
+  // Refs for player name inputs
+  const nextInputRef = useRef<(TextInput | null)[][]>([
+    [null, null], // Team 1 players
+    [null, null], // Team 2 players
+  ]);
+
   const handleTeamNameChange = (index: number, value: string) => {
     setLocalTeamNames((prev) => {
       const copy = [...prev];
@@ -41,9 +48,12 @@ const TeamSetupScreen: React.FC = () => {
     playerIndex: number,
     value: string
   ) => {
+    // Allow only alphanumeric input, and no spaces
+    const cleanedValue = value.replace(/[^A-Za-z0-9]/g, "");
+
     setLocalPlayerNames((prev) => {
       const copy = [...prev];
-      copy[teamIndex][playerIndex] = value;
+      copy[teamIndex][playerIndex] = cleanedValue;
       return copy;
     });
   };
@@ -80,12 +90,34 @@ const TeamSetupScreen: React.FC = () => {
   };
 
   const handleStartGame = () => {
+    // Ensure all player names have at least 3 characters
+    const isValid = localPlayerNames.every((team) =>
+      team.every((player) => player.length >= 3)
+    );
+
+    if (!isValid) {
+      Alert.alert("Invalid Input", "Player names must be at least 3 characters long.");
+      return;
+    }
+
     setTeam1Name(localTeamNames[0]);
     setTeam2Name(localTeamNames[1]);
     setTeam1Players(localPlayerNames[0]);
     setTeam2Players(localPlayerNames[1]);
     startGame();
     router.push("/gameplay");
+  };
+
+  const handleSubmitEditing = (
+    teamIndex: number,
+    playerIndex: number
+  ) => {
+    if (playerIndex < 1) {
+      // Move focus to the next player input
+      nextInputRef.current[teamIndex][playerIndex + 1]?.focus();
+    } else {
+      Keyboard.dismiss(); 
+    }
   };
 
   return (
@@ -131,6 +163,9 @@ const TeamSetupScreen: React.FC = () => {
                 placeholder={`Player ${idx + 1} of Team ${teamIdx + 1}`}
                 className="mb-2 p-2.5 rounded-lg border border-gray-300 w-full"
                 style={{ backgroundColor: "white", fontFamily:"Inter_500Medium" }}
+                ref={(el) => { nextInputRef.current[teamIdx][idx] = el; }}
+                returnKeyType={idx === 1 ? "done" : "next"}
+                onSubmitEditing={() => handleSubmitEditing(teamIdx, idx)}
               />
             ))}
           </View>
@@ -142,7 +177,7 @@ const TeamSetupScreen: React.FC = () => {
           disabled={shuffling}
           className={`bg-teal-500 p-2.5 rounded-lg mt-4 w-full ${shuffling ? "opacity-50" : ""}`}
         >
-          <Text className="text-white text-lg text-center" style={{fontFamily:"Poppins_600SemiBold"}}>
+          <Text className="text-white text-lg text-center" style={{ fontFamily:"Poppins_600SemiBold" }}>
             {shuffling ? "Shuffling..." : "Shuffle Players"}
           </Text>
         </TouchableOpacity>
@@ -152,7 +187,7 @@ const TeamSetupScreen: React.FC = () => {
           onPress={handleStartGame}
           className="bg-teal-500 p-2.5 rounded-lg mt-4 w-full"
         >
-          <Text className="text-white text-lg text-center" style={{fontFamily:"Poppins_600SemiBold"}}>
+          <Text className="text-white text-lg text-center" style={{ fontFamily:"Poppins_600SemiBold" }}>
             Start Game
           </Text>
         </TouchableOpacity>

@@ -1,6 +1,6 @@
 import { router } from "expo-router";
 import React from "react";
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import { Image, Pressable, Text, View } from "react-native";
 
 const Header: React.FC = () => {
   return (
@@ -9,7 +9,7 @@ const Header: React.FC = () => {
     >
       <View className="flex flex-row justify-between items-center">
         {/* Logo and Title */}
-        <TouchableOpacity onPress={() => router.push("/")}>
+        <Pressable onPress={() => router.push("/")}>
           <View className="flex-row items-center gap-4">
             <View className="relative h-11 w-11">
               <Image
@@ -32,7 +32,7 @@ const Header: React.FC = () => {
               Pool<Text className="text-teal-500">Point</Text>
             </Text>
           </View>
-        </TouchableOpacity>
+        </Pressable>
       </View>
     </View>
   );

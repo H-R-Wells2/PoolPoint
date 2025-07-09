@@ -1,6 +1,7 @@
-// Optional alternative if you want dropdown instead of native picker
+// components/DateCalendarFilter.tsx
 import React, { useState } from "react";
-import { FlatList, Modal, Text, TouchableOpacity, View } from "react-native";
+import { Modal, Text, TouchableOpacity, View } from "react-native";
+import { Calendar } from "react-native-calendars";
 
 interface Props {
   uniqueDates: string[];
@@ -8,39 +9,83 @@ interface Props {
   setSelected: (date: string | null) => void;
 }
 
-const DateDropdownFilter: React.FC<Props> = ({ uniqueDates, selected, setSelected }) => {
+const DateCalendarFilter: React.FC<Props> = ({ uniqueDates, selected, setSelected }) => {
   const [modalVisible, setModalVisible] = useState(false);
+
+  // Build marked dates
+  const markedDates: Record<string, any> = {};
+  uniqueDates.forEach((date) => {
+    markedDates[date] = {
+      marked: true,
+      dotColor: "#14b8a6",
+      selected: selected === date,
+      selectedColor: "#0f766e",
+    };
+  });
+
+  // Ensure selected date is always marked even if not in uniqueDates
+  if (selected && !markedDates[selected]) {
+    markedDates[selected] = {
+      selected: true,
+      selectedColor: "#0f766e",
+    };
+  }
 
   return (
     <View className="w-[90vw] mx-auto py-2">
+      {/* Open calendar modal */}
       <TouchableOpacity
         className="bg-slate-800 p-3 rounded-lg border border-teal-300"
         onPress={() => setModalVisible(true)}
       >
-        <Text className="text-white text-center">{selected || "Select a date"}</Text>
+        <Text className="text-white text-center">
+          {selected || "Select a date"}
+        </Text>
       </TouchableOpacity>
 
+      {/* Modal with Calendar */}
       <Modal visible={modalVisible} transparent animationType="fade">
         <View className="flex-1 justify-center items-center bg-black/70">
-          <View className="bg-slate-800 p-4 rounded-lg w-3/4">
-            <TouchableOpacity onPress={() => { setSelected(null); setModalVisible(false); }}>
-              <Text className="text-red-500 mb-2 text-right">Clear Date</Text>
-            </TouchableOpacity>
-            <FlatList
-              data={uniqueDates}
-              keyExtractor={(item) => item}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  onPress={() => {
-                    setSelected(item);
-                    setModalVisible(false);
-                  }}
-                  className="py-2 border-b border-gray-300"
-                >
-                  <Text className="text-white">{item}</Text>
-                </TouchableOpacity>
-              )}
+          <View className="bg-slate-800 p-4 rounded-lg w-[88vw]">
+            <Calendar
+              markedDates={markedDates}
+              onDayPress={(day) => {
+                const dateStr = day.dateString;
+                setSelected(selected === dateStr ? null : dateStr);
+                setModalVisible(false);
+              }}
+              theme={{
+                backgroundColor: "#1e293b",
+                calendarBackground: "#1e293b",
+                textSectionTitleColor: "#cbd5e1",
+                dayTextColor: "#ffffff",
+                todayTextColor: "#facc15",
+                selectedDayTextColor: "#ffffff",
+                monthTextColor: "#14b8a6",
+                arrowColor: "#14b8a6",
+              }}
             />
+
+            {/* Clear date button */}
+            {selected && (
+              <TouchableOpacity
+                onPress={() => {
+                  setSelected(null);
+                  setModalVisible(false);
+                }}
+                className="mt-3 bg-red-600 p-2 rounded"
+              >
+                <Text className="text-white text-center">Clear Date</Text>
+              </TouchableOpacity>
+            )}
+
+            {/* Cancel without changing */}
+            <TouchableOpacity
+              onPress={() => setModalVisible(false)}
+              className="mt-2 p-2 border border-slate-400 rounded"
+            >
+              <Text className="text-center text-gray-300">Cancel</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
@@ -48,4 +93,4 @@ const DateDropdownFilter: React.FC<Props> = ({ uniqueDates, selected, setSelecte
   );
 };
 
-export default DateDropdownFilter;
+export default DateCalendarFilter;
