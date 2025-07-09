@@ -80,7 +80,6 @@ const TeamSetupScreen: React.FC = () => {
   };
 
   const handleStartGame = () => {
-    // Push to Zustand store
     setTeam1Name(localTeamNames[0]);
     setTeam2Name(localTeamNames[1]);
     setTeam1Players(localPlayerNames[0]);

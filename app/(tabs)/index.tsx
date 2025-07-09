@@ -1,5 +1,5 @@
 import { router } from "expo-router";
-import { FlatList, Pressable, Text, View } from "react-native";
+import { FlatList, Text, TouchableOpacity, View } from "react-native";
 
 export default function Index() {
 
@@ -19,7 +19,7 @@ export default function Index() {
       <FlatList
         data={pages}
         renderItem={({ item }) => (
-          <Pressable 
+          <TouchableOpacity 
             onPress={() => handlePress(item.href)} 
             className="bg-teal-500 px-4 py-2.5 rounded-lg w-[60vw]"
           >
@@ -29,7 +29,7 @@ export default function Index() {
             >
               {item.title}
             </Text>
-          </Pressable>
+          </TouchableOpacity>
         )}
         keyExtractor={(item) => item.href}
         contentContainerStyle={{
