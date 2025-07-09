@@ -1,6 +1,5 @@
 import { router } from "expo-router";
-import { FlatList, Pressable, Text } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { FlatList, Pressable, Text, View } from "react-native";
 
 export default function Index() {
 
@@ -16,7 +15,7 @@ export default function Index() {
   };
 
   return (
-    <SafeAreaView className="flex-1 items-center bg-[#111827]">
+    <View className="flex-1 items-center bg-[#111827]">
       <FlatList
         data={pages}
         renderItem={({ item }) => (
@@ -39,6 +38,6 @@ export default function Index() {
           paddingTop: 150
         }}
       />
-    </SafeAreaView>
+    </View>
   );
 }
