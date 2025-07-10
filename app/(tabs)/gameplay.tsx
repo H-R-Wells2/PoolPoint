@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import PlayerCard from "@/components/PlayerCard";
 import { useGameStore } from "@/store/game.store";
 import { useRouter } from "expo-router";
@@ -6,8 +7,15 @@ import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 const GamePlay: React.FC = () => {
   const router = useRouter();
-  const { playerNames, setPlayerNames, playerScores, setPlayerScores } =
-    useGameStore();
+  const {
+    playerNames,
+    setPlayerNames,
+    playerScores,
+    setPlayerScores,
+    totalTableAmount,
+  } = useGameStore();
+
+  // const totalTableAmount = 120;
 
   const calculateAmounts = (count: number): number[] => {
     switch (count) {
@@ -15,19 +23,48 @@ const GamePlay: React.FC = () => {
         return [50, 50];
       case 3:
         return [25, 32, 43];
+      case 4:
+        return [10, 20, 30, 40];
       default:
-        return Array.from({ length: count }, (_, i) => (i + 1) * 10);
+        // Spread 100 proportionally in descending order for more than 4 players
+        const base = 100 / count;
+        return Array.from({ length: count }, (_, i) =>
+          Math.round(base * (count - i))
+        );
     }
   };
 
-  const submitResult = async () => {
-    const sorted = Object.entries(playerScores).sort((a, b) => b[1] - a[1]);
-    const amounts = calculateAmounts(sorted.length);
+  type PlayerScoreMap = Record<string, number>;
 
-    const players = sorted.map(([playerName, score], i) => ({
+  type PlayerResult = {
+    playerName: string;
+    score: number;
+    amount: number;
+  };
+
+  const submitResult = async (): Promise<void> => {
+    const sorted = Object.entries(playerScores).sort((a, b) => b[1] - a[1]) as [
+      string,
+      number,
+    ][]; // Tuple typing for Object.entries
+
+    const percentages: number[] = calculateAmounts(sorted.length);
+
+    // Step 1: Calculate raw amounts and round them down
+    const rawAmounts: number[] = percentages.map((p) =>
+      Math.floor((p / 100) * totalTableAmount)
+    );
+
+    // Step 2: Adjust the last player’s amount to match total
+    const totalSoFar = rawAmounts.reduce((sum, amt) => sum + amt, 0);
+    const remainder = totalTableAmount - totalSoFar;
+    rawAmounts[rawAmounts.length - 1] += remainder;
+
+    // Step 3: Create player result list
+    const players: PlayerResult[] = sorted.map(([playerName, score], i) => ({
       playerName,
       score,
-      amount: amounts[i],
+      amount: rawAmounts[i],
     }));
 
     try {
@@ -45,7 +82,6 @@ const GamePlay: React.FC = () => {
       setPlayerNames([]);
       setPlayerScores({});
       router.replace("/history");
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       Alert.alert("Error", "Failed to submit result. Try again.");
     }
@@ -54,7 +90,7 @@ const GamePlay: React.FC = () => {
   return (
     <ScrollView>
       <View className="flex-1 items-center my-8">
-        <View className="w-full flex flex-col justify-center items-center px-4 gap-6">
+        <View className="w-full flex flex-col justify-center items-center px-4 gap-4">
           {playerNames.map((name, index) => (
             <PlayerCard
               key={index}

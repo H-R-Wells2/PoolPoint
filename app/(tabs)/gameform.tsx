@@ -12,7 +12,7 @@ import {
   View,
 } from "react-native";
 
-const GameScreen: React.FC = () => {
+const GameFormScreen: React.FC = () => {
   const [playerCount, setPlayerCount] = useState(2);
   const [playerNames, setPlayerNames] = useState<string[]>(["", "", "", ""]);
 
@@ -136,4 +136,4 @@ const GameScreen: React.FC = () => {
   );
 };
 
-export default GameScreen;
+export default GameFormScreen;

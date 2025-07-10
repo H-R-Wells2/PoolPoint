@@ -10,6 +10,8 @@ export type GameState = {
   team2Score: number;
 
   gameStarted: boolean;
+  totalTableAmount: number;
+  setTotalTableAmount: (amount: number) => void;
 
   setTeam1Name: (name: string) => void;
   setTeam1Players: (players: string[]) => void;
@@ -39,6 +41,8 @@ export const useGameStore = create<GameState>((set) => ({
   team2Score: 0,
 
   gameStarted: false,
+  totalTableAmount: 100,
+  setTotalTableAmount: (amount) => set({ totalTableAmount: amount }),
 
   setTeam1Name: (name) => set({ team1Name: name }),
   setTeam1Players: (players) => set({ team1Players: players }),

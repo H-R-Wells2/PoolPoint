@@ -12,7 +12,7 @@ import {
   View,
 } from "react-native";
 
-const TeamSetupScreen: React.FC = () => {
+const TeamFormScreen: React.FC = () => {
   const [localTeamNames, setLocalTeamNames] = useState(["Team 1", "Team 2"]);
   const [localPlayerNames, setLocalPlayerNames] = useState([
     ["Rupesh", "Shubham"],
@@ -223,4 +223,4 @@ const TeamSetupScreen: React.FC = () => {
   );
 };
 
-export default TeamSetupScreen;
+export default TeamFormScreen;

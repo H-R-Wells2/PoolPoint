@@ -1,41 +1,54 @@
-// import { useFonts } from "expo-font";
+import { Ionicons } from "@expo/vector-icons";
+import * as Font from "expo-font";
+import { SplashScreen, Stack } from "expo-router";
+import { useEffect, useState } from "react";
+import "./globals.css";
+
 import {
   Inter_500Medium,
   Inter_600SemiBold,
   Inter_900Black,
-  useFonts
+  useFonts as useInterFonts,
 } from "@expo-google-fonts/inter";
 import {
   Poppins_500Medium,
   Poppins_600SemiBold,
   Poppins_800ExtraBold,
   Poppins_900Black,
+  useFonts as usePoppinsFonts,
 } from "@expo-google-fonts/poppins";
-import { SplashScreen, Stack } from "expo-router";
-
-import { useEffect } from "react";
-import "./globals.css";
 
 export default function RootLayout() {
-  const [loaded, error] = useFonts({
-    Inter_900Black,
+  const [iconsLoaded, setIconsLoaded] = useState(false);
+
+  const [interLoaded] = useInterFonts({
     Inter_500Medium,
-    Poppins_900Black,
     Inter_600SemiBold,
-    Poppins_800ExtraBold,
+    Inter_900Black,
+  });
+
+  const [poppinsLoaded] = usePoppinsFonts({
     Poppins_500Medium,
     Poppins_600SemiBold,
+    Poppins_800ExtraBold,
+    Poppins_900Black,
   });
 
   useEffect(() => {
-    if (loaded || error) {
+    Font.loadAsync(Ionicons.font)
+      .then(() => setIconsLoaded(true))
+      .catch((e) => console.warn("Ionicons font load error", e));
+  }, []);
+
+  useEffect(() => {
+    if (interLoaded && poppinsLoaded && iconsLoaded) {
       SplashScreen.hideAsync();
     }
-  }, [loaded, error]);
+  }, [interLoaded, poppinsLoaded, iconsLoaded]);
 
-  if (!loaded && !error) {
-    return null;
-  }
+  const allLoaded = interLoaded && poppinsLoaded && iconsLoaded;
+
+  if (!allLoaded) return null;
 
   return (
     <Stack initialRouteName="(tabs)" screenOptions={{ headerShown: false }} />
