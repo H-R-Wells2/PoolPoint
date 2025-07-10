@@ -46,7 +46,7 @@ const ResultCard: React.FC<ResultCardProps> = ({ result, isAdmin = false }) => {
           {formatDateString(result.date)}
         </Text>
         {isAdmin && (
-          <Text className="text-red-400 text-xs">Delete</Text> // Replace with delete component
+          <Text className="text-red-400 text-xs">Delete</Text>
         )}
       </View>
 

@@ -4,8 +4,8 @@ import { FlatList, Text, TouchableOpacity, View } from "react-native";
 export default function Index() {
 
   const pages = [
-    { href: '/new-game', title: 'New Game' },
-    { href: '/team-game', title: 'Team Game' },
+    { href: '/game', title: 'New Game' },
+    { href: '/team-gameform', title: 'Team Game' },
     { href: '/history', title: 'History' },
     { href: '/settings', title: 'Settings' },
   ];

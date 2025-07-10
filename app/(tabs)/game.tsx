@@ -1,57 +1,139 @@
-import PlayerCard from "@/components/PlayerCard"; // Assume PlayerCard is similar to your current component
 import { useGameStore } from "@/store/game.store";
 import { router } from "expo-router";
-import React from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import React, { useRef, useState } from "react";
+import {
+  Alert,
+  Keyboard,
+  Pressable,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
-const Game: React.FC = () => {
-  const {
-    team1Players,
-    team2Players,
-    team1Score,
-    setTeam1Score,
-    team2Score,
-    setTeam2Score,
-  } = useGameStore();
+const GameScreen: React.FC = () => {
+  const [playerCount, setPlayerCount] = useState(2);
+  const [playerNames, setPlayerNames] = useState<string[]>(["", "", "", ""]);
 
-  const handleSubmit = () => {
-    // Handle result submission logic here, including score submission
-    router.replace("/history"); // Navigate to results screen
+  const { setPlayerNames: setStoreNames, setPlayerScores } = useGameStore();
+  const inputRefs = useRef<(TextInput | null)[]>([]);
+
+  const handlePlayerCountChange = (count: number) => {
+    setPlayerCount(count);
+    setPlayerNames(Array(count).fill(""));
   };
+
+  const handlePlayerNameChange = (index: number, value: string) => {
+    const cleaned = value.replace(/[^A-Za-z0-9]/g, "");
+    setPlayerNames((prev) => {
+      const updated = [...prev];
+      updated[index] = cleaned;
+      return updated;
+    });
+  };
+
+  const handleSubmitEditing = (index: number) => {
+    if (index < playerCount - 1) {
+      inputRefs.current[index + 1]?.focus();
+    } else {
+      Keyboard.dismiss();
+    }
+  };
+
+  const handleStartGame = () => {
+  const trimmedNames = playerNames.slice(0, playerCount);
+  
+  const hasEmpty = trimmedNames.some((name) => name.trim() === "");
+  const hasInvalid = trimmedNames.some((name) => name.trim().length < 3);
+  const hasDuplicates = new Set(trimmedNames.map((name) => name.trim())).size !== trimmedNames.length;
+
+  if (hasEmpty) {
+    Alert.alert("Missing Name", "All player names must be filled in.");
+    return;
+  }
+
+  if (hasDuplicates) {
+    Alert.alert("Duplicate Names", "Each player must have a unique name.");
+    return;
+  }
+
+  if (hasInvalid) {
+    Alert.alert(
+      "Invalid Input",
+      "Player names must be at least 3 characters long."
+    );
+    return;
+  }
+
+  const scores: { [key: string]: number } = {};
+  trimmedNames.forEach((name) => (scores[name.trim()] = 0));
+
+  setStoreNames(trimmedNames.map((name) => name.trim()));
+  setPlayerScores(scores);
+
+  router.push("/gameplay");
+};
+
 
   return (
     <ScrollView>
-      <View className="flex-1 items-center mt-8">
-        <View className="w-full flex flex-col justify-center items-center px-4 gap-6">
-          <PlayerCard
-            name="Team 1"
-            players={team1Players}
-            score={team1Score}
-            setScore={setTeam1Score}
-          />
-          <PlayerCard
-            name="Team 2"
-            players={team2Players}
-            score={team2Score}
-            setScore={setTeam2Score}
-          />
-
-          {/* Submit Button */}
-          <TouchableOpacity
-            onPress={handleSubmit}
-            className="bg-teal-500 p-3 rounded-lg w-full max-w-[90vw]"
-          >
-            <Text
-              className="text-white text-lg text-center font-semibold"
-              style={{ fontFamily: "Poppins_600SemiBold" }}
+      <View className="flex justify-center items-center px-4 rounded-lg mx-10 mt-10">
+        <View className="mx-auto w-full flex-1 flex-row mb-5 justify-between">
+          {[2, 3, 4].map((count) => (
+            <Pressable
+              key={count}
+              onPress={() => handlePlayerCountChange(count)}
+              className="w-[32%] rounded-lg"
+              style={{
+                backgroundColor: playerCount === count ? "#14b8a6" : "#1f2937",
+                paddingVertical: 10,
+                paddingHorizontal: 15,
+              }}
             >
-              Submit Game
-            </Text>
-          </TouchableOpacity>
+              <Text
+                style={{
+                  color: "white",
+                  fontFamily: "Poppins_600SemiBold",
+                  textAlign: "center",
+                }}
+              >
+                {count} Players
+              </Text>
+            </Pressable>
+          ))}
         </View>
+
+        {playerNames.slice(0, playerCount).map((name, index) => (
+          <TextInput
+            key={index}
+            ref={(el) => {
+              inputRefs.current[index] = el;
+            }}
+            value={name}
+            onChangeText={(text) => handlePlayerNameChange(index, text)}
+            placeholder={`Player ${index + 1}`}
+            className="mb-2 p-2.5 rounded-lg border border-gray-300 w-full placeholder:text-slate-500"
+            style={{ backgroundColor: "white", fontFamily: "Inter_500Medium" }}
+            returnKeyType={index === playerCount - 1 ? "done" : "next"}
+            onSubmitEditing={() => handleSubmitEditing(index)}
+          />
+        ))}
+
+        <TouchableOpacity
+          onPress={handleStartGame}
+          className="bg-teal-500 p-2.5 rounded-lg mt-4 w-full"
+        >
+          <Text
+            className="text-white text-lg text-center"
+            style={{ fontFamily: "Poppins_600SemiBold" }}
+          >
+            Start Game
+          </Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );
 };
 
-export default Game;
+export default GameScreen;

@@ -1,27 +1,33 @@
-import { create } from 'zustand'
+import { create } from "zustand";
 
 export type GameState = {
-  team1Name: string
-  team1Players: string[]
-  team1Score: number
+  team1Name: string;
+  team1Players: string[];
+  team1Score: number;
 
-  team2Name: string
-  team2Players: string[]
-  team2Score: number
+  team2Name: string;
+  team2Players: string[];
+  team2Score: number;
 
-  gameStarted: boolean
+  gameStarted: boolean;
 
-  setTeam1Name: (name: string) => void
-  setTeam1Players: (players: string[]) => void
-  setTeam1Score: (score: number) => void
+  setTeam1Name: (name: string) => void;
+  setTeam1Players: (players: string[]) => void;
+  setTeam1Score: (score: number) => void;
 
-  setTeam2Name: (name: string) => void
-  setTeam2Players: (players: string[]) => void
-  setTeam2Score: (score: number) => void
+  setTeam2Name: (name: string) => void;
+  setTeam2Players: (players: string[]) => void;
+  setTeam2Score: (score: number) => void;
 
-  startGame: () => void
-  resetGame: () => void
-}
+  startGame: () => void;
+  resetGame: () => void;
+
+  playerNames: string[];
+  playerScores: { [key: string]: number };
+
+  setPlayerNames: (names: string[]) => void;
+  setPlayerScores: (scores: { [key: string]: number }) => void;
+};
 
 export const useGameStore = create<GameState>((set) => ({
   team1Name: "Team 1",
@@ -43,6 +49,7 @@ export const useGameStore = create<GameState>((set) => ({
   setTeam2Score: (score) => set({ team2Score: score }),
 
   startGame: () => set({ gameStarted: true }),
+
   resetGame: () =>
     set({
       team1Name: "Team 1",
@@ -52,5 +59,13 @@ export const useGameStore = create<GameState>((set) => ({
       team2Players: ["Ravi", "Rupesh"],
       team2Score: 0,
       gameStarted: false,
+      playerNames: [],
+      playerScores: {},
     }),
-}))
+
+  playerNames: [],
+  playerScores: {},
+
+  setPlayerNames: (names) => set({ playerNames: names }),
+  setPlayerScores: (scores) => set({ playerScores: scores }),
+}));

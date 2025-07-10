@@ -29,10 +29,9 @@ const TeamSetupScreen: React.FC = () => {
     startGame,
   } = useGameStore();
 
-  // Refs for player name inputs
   const nextInputRef = useRef<(TextInput | null)[][]>([
-    [null, null], // Team 1 players
-    [null, null], // Team 2 players
+    [null, null],
+    [null, null],
   ]);
 
   const handleTeamNameChange = (index: number, value: string) => {
@@ -90,33 +89,50 @@ const TeamSetupScreen: React.FC = () => {
   };
 
   const handleStartGame = () => {
-    // Ensure all player names have at least 3 characters
-    const isValid = localPlayerNames.every((team) =>
-      team.every((player) => player.length >= 3)
-    );
+    const allPlayers = [...localPlayerNames[0], ...localPlayerNames[1]];
+    const trimmedPlayers = allPlayers.map((name) => name.trim());
 
-    if (!isValid) {
-      Alert.alert("Invalid Input", "Player names must be at least 3 characters long.");
+    const hasEmpty = trimmedPlayers.some((name) => name === "");
+    const hasInvalid = trimmedPlayers.some((name) => name.length < 3);
+    const hasDuplicates =
+      new Set(trimmedPlayers).size !== trimmedPlayers.length;
+
+    if (hasEmpty) {
+      Alert.alert("Missing Name", "All player names must be filled in.");
       return;
     }
 
+    if (hasInvalid) {
+      Alert.alert(
+        "Invalid Input",
+        "Player names must be at least 3 characters long."
+      );
+      return;
+    }
+
+    if (hasDuplicates) {
+      Alert.alert("Duplicate Names", "Each player must have a unique name.");
+      return;
+    }
+
+    const [team1Names, team2Names] = [
+      trimmedPlayers.slice(0, 2),
+      trimmedPlayers.slice(2, 4),
+    ];
+
     setTeam1Name(localTeamNames[0]);
     setTeam2Name(localTeamNames[1]);
-    setTeam1Players(localPlayerNames[0]);
-    setTeam2Players(localPlayerNames[1]);
+    setTeam1Players(team1Names);
+    setTeam2Players(team2Names);
     startGame();
-    router.push("/gameplay");
+    router.push("/team-gameplay");
   };
 
-  const handleSubmitEditing = (
-    teamIndex: number,
-    playerIndex: number
-  ) => {
+  const handleSubmitEditing = (teamIndex: number, playerIndex: number) => {
     if (playerIndex < 1) {
-      // Move focus to the next player input
       nextInputRef.current[teamIndex][playerIndex + 1]?.focus();
     } else {
-      Keyboard.dismiss(); 
+      Keyboard.dismiss();
     }
   };
 
@@ -161,9 +177,14 @@ const TeamSetupScreen: React.FC = () => {
                   handlePlayerNameChange(teamIdx, idx, text)
                 }
                 placeholder={`Player ${idx + 1} of Team ${teamIdx + 1}`}
-                className="mb-2 p-2.5 rounded-lg border border-gray-300 w-full"
-                style={{ backgroundColor: "white", fontFamily:"Inter_500Medium" }}
-                ref={(el) => { nextInputRef.current[teamIdx][idx] = el; }}
+                className="mb-2 p-2.5 rounded-lg border border-gray-300 w-full placeholder:text-slate-400"
+                style={{
+                  backgroundColor: "white",
+                  fontFamily: "Inter_500Medium",
+                }}
+                ref={(el) => {
+                  nextInputRef.current[teamIdx][idx] = el;
+                }}
                 returnKeyType={idx === 1 ? "done" : "next"}
                 onSubmitEditing={() => handleSubmitEditing(teamIdx, idx)}
               />
@@ -177,7 +198,10 @@ const TeamSetupScreen: React.FC = () => {
           disabled={shuffling}
           className={`bg-teal-500 p-2.5 rounded-lg mt-4 w-full ${shuffling ? "opacity-50" : ""}`}
         >
-          <Text className="text-white text-lg text-center" style={{ fontFamily:"Poppins_600SemiBold" }}>
+          <Text
+            className="text-white text-lg text-center"
+            style={{ fontFamily: "Poppins_600SemiBold" }}
+          >
             {shuffling ? "Shuffling..." : "Shuffle Players"}
           </Text>
         </TouchableOpacity>
@@ -187,7 +211,10 @@ const TeamSetupScreen: React.FC = () => {
           onPress={handleStartGame}
           className="bg-teal-500 p-2.5 rounded-lg mt-4 w-full"
         >
-          <Text className="text-white text-lg text-center" style={{ fontFamily:"Poppins_600SemiBold" }}>
+          <Text
+            className="text-white text-lg text-center"
+            style={{ fontFamily: "Poppins_600SemiBold" }}
+          >
             Start Game
           </Text>
         </TouchableOpacity>
