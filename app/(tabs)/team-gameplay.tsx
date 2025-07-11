@@ -4,6 +4,8 @@ import { router } from "expo-router";
 import React, { useState } from "react";
 import {
   ActivityIndicator,
+  Alert,
+  Modal,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -24,11 +26,12 @@ const TeamGamePlay = () => {
 
     totalTableAmount,
 
-    gameStarted,
+    teamGameStarted,
     resetGame,
   } = useGameStore();
 
   const [submitting, setSubmitting] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const handleSubmit = async () => {
     try {
@@ -51,7 +54,6 @@ const TeamGamePlay = () => {
       let team2AmountPerPlayer: number;
 
       if (totalTableAmount === 120) {
-        // Manual override for ₹120 case: 20, 20, 40, 40
         const winnerAmount = 40;
         const loserAmount = 20;
 
@@ -77,7 +79,6 @@ const TeamGamePlay = () => {
           : losingAmount / team2PlayerCount;
       }
 
-      // Build player objects (with amount calculation)
       const team1BaseScore = Math.floor(team1Score / team1PlayerCount);
       const team1Remainder = team1Score % team1PlayerCount;
 
@@ -91,7 +92,6 @@ const TeamGamePlay = () => {
         isTeamWon: boolean;
       }[] = [];
 
-      // Step 1: Create all player objects with floored amounts
       let rawPlayers = [
         ...team1Players.map((player, index) => ({
           playerName: player,
@@ -119,12 +119,10 @@ const TeamGamePlay = () => {
         })),
       ];
 
-      // Step 2: Fix rounding error by adjusting total amount
       if (!draw) {
         const totalAssigned = rawPlayers.reduce((sum, p) => sum + p.amount, 0);
         const remainder = totalTableAmount - totalAssigned;
 
-        // Distribute remaining 1-2 rupees starting from the top (or winners first)
         for (let i = 0; i < remainder; i++) {
           rawPlayers[i % rawPlayers.length].amount += 1;
         }
@@ -147,15 +145,20 @@ const TeamGamePlay = () => {
       router.replace("/(tabs)/history");
     } catch (error) {
       console.error("Error submitting game:", error);
+      Alert.alert(
+        "Error",
+        "There was an issue while submitting the game. Try again!"
+      );
     } finally {
       setSubmitting(false);
+      setShowConfirmModal(false);
     }
   };
 
   return (
     <ScrollView>
       <View className="flex-1 items-center my-8">
-        {!gameStarted ? (
+        {!teamGameStarted ? (
           <Text className="text-white text-xl mt-20">
             Start the game from setup tab first.
           </Text>
@@ -175,7 +178,7 @@ const TeamGamePlay = () => {
             />
 
             <TouchableOpacity
-              onPress={handleSubmit}
+              onPress={() => setShowConfirmModal(true)}
               className="bg-teal-500 p-3 rounded-lg w-full max-w-[90vw] flex items-center justify-center"
               disabled={submitting}
               style={{ opacity: submitting ? 0.6 : 1 }}
@@ -194,6 +197,41 @@ const TeamGamePlay = () => {
           </View>
         )}
       </View>
+
+      <Modal
+        visible={showConfirmModal}
+        transparent
+        animationType="none"
+        onRequestClose={() => setShowConfirmModal(false)}
+      >
+        <View className="flex-1 justify-center items-center bg-black/50">
+          <View className="bg-white rounded-lg p-6 w-[90vw] max-w-md shadow-lg">
+            <Text className="text-lg font-semibold mb-4 text-center text-gray-800">
+              Are you sure you want to submit the result?
+            </Text>
+
+            <View className="flex-row justify-between mt-4">
+              <TouchableOpacity
+                className="px-4 py-2 bg-gray-300 rounded-md flex-1 mr-2"
+                onPress={() => setShowConfirmModal(false)}
+              >
+                <Text className="text-center text-gray-800 font-medium">
+                  Cancel
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                className="px-4 py-2 bg-teal-500 rounded-md flex-1 ml-2"
+                onPress={handleSubmit}
+              >
+                <Text className="text-center text-white font-medium">
+                  Confirm
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 };

@@ -16,7 +16,12 @@ const GameFormScreen: React.FC = () => {
   const [playerCount, setPlayerCount] = useState(2);
   const [playerNames, setPlayerNames] = useState<string[]>(["", "", "", ""]);
 
-  const { setPlayerNames: setStoreNames, setPlayerScores } = useGameStore();
+  const {
+    setPlayerNames: setStoreNames,
+    setPlayerScores,
+    gameStarted,
+    startGame
+  } = useGameStore();
   const inputRefs = useRef<(TextInput | null)[]>([]);
 
   const handlePlayerCountChange = (count: number) => {
@@ -42,39 +47,45 @@ const GameFormScreen: React.FC = () => {
   };
 
   const handleStartGame = () => {
-  const trimmedNames = playerNames.slice(0, playerCount);
-  
-  const hasEmpty = trimmedNames.some((name) => name.trim() === "");
-  const hasInvalid = trimmedNames.some((name) => name.trim().length < 3);
-  const hasDuplicates = new Set(trimmedNames.map((name) => name.trim())).size !== trimmedNames.length;
+    const trimmedNames = playerNames.slice(0, playerCount);
 
-  if (hasEmpty) {
-    Alert.alert("Missing Name", "All player names must be filled in.");
-    return;
-  }
+    const hasEmpty = trimmedNames.some((name) => name.trim() === "");
+    const hasInvalid = trimmedNames.some((name) => name.trim().length < 3);
+    const hasDuplicates =
+      new Set(trimmedNames.map((name) => name.trim())).size !==
+      trimmedNames.length;
 
-  if (hasDuplicates) {
-    Alert.alert("Duplicate Names", "Each player must have a unique name.");
-    return;
-  }
+    if (hasEmpty) {
+      Alert.alert("Missing Name", "All player names must be filled in.");
+      return;
+    }
 
-  if (hasInvalid) {
-    Alert.alert(
-      "Invalid Input",
-      "Player names must be at least 3 characters long."
-    );
-    return;
-  }
+    if (hasDuplicates) {
+      Alert.alert("Duplicate Names", "Each player must have a unique name.");
+      return;
+    }
 
-  const scores: { [key: string]: number } = {};
-  trimmedNames.forEach((name) => (scores[name.trim()] = 0));
+    if (hasInvalid) {
+      Alert.alert(
+        "Invalid Input",
+        "Player names must be at least 3 characters long."
+      );
+      return;
+    }
 
-  setStoreNames(trimmedNames.map((name) => name.trim()));
-  setPlayerScores(scores);
+    const scores: { [key: string]: number } = {};
+    trimmedNames.forEach((name) => (scores[name.trim()] = 0));
 
-  router.push("/gameplay");
-};
+    setStoreNames(trimmedNames.map((name) => name.trim()));
+    setPlayerScores(scores);
+    startGame();
 
+    router.push("/gameplay");
+  };
+
+  const handleResume = () => {
+    router.push("/gameplay");
+  };
 
   return (
     <ScrollView>
@@ -119,6 +130,20 @@ const GameFormScreen: React.FC = () => {
             onSubmitEditing={() => handleSubmitEditing(index)}
           />
         ))}
+
+        {gameStarted && (
+          <TouchableOpacity
+            onPress={handleResume}
+            className="bg-teal-500 p-2.5 rounded-lg mt-4 w-full"
+          >
+            <Text
+              className="text-white text-lg text-center"
+              style={{ fontFamily: "Poppins_600SemiBold" }}
+            >
+              Resume Game
+            </Text>
+          </TouchableOpacity>
+        )}
 
         <TouchableOpacity
           onPress={handleStartGame}

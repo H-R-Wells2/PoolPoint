@@ -10,6 +10,7 @@ export type GameState = {
   team2Score: number;
 
   gameStarted: boolean;
+  teamGameStarted: boolean;
   totalTableAmount: number;
   setTotalTableAmount: (amount: number) => void;
 
@@ -41,6 +42,7 @@ export const useGameStore = create<GameState>((set) => ({
   team2Score: 0,
 
   gameStarted: false,
+  teamGameStarted: false,
   totalTableAmount: 100,
   setTotalTableAmount: (amount) => set({ totalTableAmount: amount }),
 
@@ -52,7 +54,11 @@ export const useGameStore = create<GameState>((set) => ({
   setTeam2Players: (players) => set({ team2Players: players }),
   setTeam2Score: (score) => set({ team2Score: score }),
 
-  startGame: () => set({ gameStarted: true }),
+  startGame: () =>
+    set({
+      gameStarted: true,
+      teamGameStarted: true,
+    }),
 
   resetGame: () =>
     set({
@@ -63,6 +69,7 @@ export const useGameStore = create<GameState>((set) => ({
       team2Players: ["Ravi", "Rupesh"],
       team2Score: 0,
       gameStarted: false,
+      teamGameStarted: false,
       playerNames: [],
       playerScores: {},
     }),

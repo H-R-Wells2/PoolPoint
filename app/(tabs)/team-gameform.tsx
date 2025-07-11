@@ -27,6 +27,7 @@ const TeamFormScreen: React.FC = () => {
     setTeam2Name,
     setTeam2Players,
     startGame,
+    teamGameStarted,
   } = useGameStore();
 
   const nextInputRef = useRef<(TextInput | null)[][]>([
@@ -47,7 +48,6 @@ const TeamFormScreen: React.FC = () => {
     playerIndex: number,
     value: string
   ) => {
-    // Allow only alphanumeric input, and no spaces
     const cleanedValue = value.replace(/[^A-Za-z0-9]/g, "");
 
     setLocalPlayerNames((prev) => {
@@ -136,6 +136,10 @@ const TeamFormScreen: React.FC = () => {
     }
   };
 
+  const handleResume = () => {
+    router.push("/team-gameplay");
+  };
+
   return (
     <ScrollView>
       <View className="flex justify-center items-center rounded-lg mx-10 mt-8">
@@ -192,7 +196,6 @@ const TeamFormScreen: React.FC = () => {
           </View>
         ))}
 
-        {/* Shuffle */}
         <TouchableOpacity
           onPress={shufflePlayers}
           disabled={shuffling}
@@ -206,7 +209,20 @@ const TeamFormScreen: React.FC = () => {
           </Text>
         </TouchableOpacity>
 
-        {/* Start Game */}
+        {teamGameStarted && (
+          <TouchableOpacity
+            onPress={handleResume}
+            className="bg-teal-500 p-2.5 rounded-lg mt-4 w-full"
+          >
+            <Text
+              className="text-white text-lg text-center"
+              style={{ fontFamily: "Poppins_600SemiBold" }}
+            >
+              Resume Game
+            </Text>
+          </TouchableOpacity>
+        )}
+
         <TouchableOpacity
           onPress={handleStartGame}
           className="bg-teal-500 p-2.5 rounded-lg mt-4 w-full"
