@@ -111,7 +111,11 @@ export default function Index() {
 
       {/* Loading */}
       {loading ? (
-        <ActivityIndicator size="large" color="#22d3ee" style={{ marginTop: 20 }} />
+        <ActivityIndicator
+          size="large"
+          color="#22d3ee"
+          style={{ marginTop: 20 }}
+        />
       ) : (
         <>
           {/* Summary Card */}
@@ -172,14 +176,19 @@ export default function Index() {
                   color="#10b981"
                 />
                 <Text className="text-gray-300 ml-2">
-                  Winner: {lastGame.winner}
+                  Winner:{" "}
+                  {Array.isArray(lastGame.winner)
+                    ? lastGame.winner.join(" & ")
+                    : lastGame.winner}
                 </Text>
               </View>
               <TouchableOpacity
                 className="mt-3 w-1/2"
                 onPress={() => router.push("/history")}
               >
-                <Text className="text-teal-400 font-semibold">View Details →</Text>
+                <Text className="text-teal-400 font-semibold">
+                  View Details →
+                </Text>
               </TouchableOpacity>
             </View>
           )}
