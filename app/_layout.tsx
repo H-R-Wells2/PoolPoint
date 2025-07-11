@@ -6,15 +6,10 @@ import "./globals.css";
 
 import {
   Inter_500Medium,
-  Inter_600SemiBold,
-  Inter_900Black,
   useFonts as useInterFonts,
 } from "@expo-google-fonts/inter";
 import {
-  Poppins_500Medium,
   Poppins_600SemiBold,
-  Poppins_800ExtraBold,
-  Poppins_900Black,
   useFonts as usePoppinsFonts,
 } from "@expo-google-fonts/poppins";
 
@@ -23,15 +18,10 @@ export default function RootLayout() {
 
   const [interLoaded] = useInterFonts({
     Inter_500Medium,
-    Inter_600SemiBold,
-    Inter_900Black,
   });
 
   const [poppinsLoaded] = usePoppinsFonts({
-    Poppins_500Medium,
     Poppins_600SemiBold,
-    Poppins_800ExtraBold,
-    Poppins_900Black,
   });
 
   useEffect(() => {

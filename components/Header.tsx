@@ -5,7 +5,7 @@ import { Image, Pressable, Text, View } from "react-native";
 const Header: React.FC = () => {
   return (
     <View
-      className="w-full fixed top-0 z-10 px-4 pb-4 pt-3"
+      className="w-full fixed top-0 z-10 px-6 pb-4 pt-3"
     >
       <View className="flex flex-row justify-between items-center">
         {/* Logo and Title */}

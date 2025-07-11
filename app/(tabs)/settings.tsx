@@ -19,7 +19,7 @@ const Settings: React.FC = () => {
   };
 
   return (
-    <View className="flex-1 px-6 my-8">
+    <View className="flex-1 my-8 mx-10">
       <Text
         className="text-2xl mb-4 text-center text-white"
         style={{ fontFamily: "Poppins_600SemiBold" }}
@@ -40,7 +40,7 @@ const Settings: React.FC = () => {
           onChangeText={setAmount}
           keyboardType="numeric"
           placeholder="Enter amount"
-          className="border border-gray-300 rounded-lg px-4 py-2"
+          className="border border-gray-300 rounded-lg px-4 py-3"
           style={{ backgroundColor: "#fff", fontFamily: "Inter_500Medium" }}
         />
 

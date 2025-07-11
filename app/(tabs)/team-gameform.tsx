@@ -138,7 +138,7 @@ const TeamFormScreen: React.FC = () => {
 
   return (
     <ScrollView>
-      <View className="flex justify-center items-center px-4 rounded-lg mx-10 mt-8">
+      <View className="flex justify-center items-center rounded-lg mx-10 mt-8">
         {[0, 1].map((teamIdx) => (
           <View
             key={teamIdx}

@@ -78,7 +78,7 @@ const GameFormScreen: React.FC = () => {
 
   return (
     <ScrollView>
-      <View className="flex justify-center items-center px-4 rounded-lg mx-10 mt-10">
+      <View className="flex justify-center items-center rounded-lg mx-10 mt-10">
         <View className="mx-auto w-full flex-1 flex-row mb-5 justify-between">
           {[2, 3, 4].map((count) => (
             <Pressable
