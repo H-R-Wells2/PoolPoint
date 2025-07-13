@@ -30,26 +30,26 @@ const PlayerCard = ({ name, players, score, setScore }: Props) => {
         <View className="flex flex-row gap-2 justify-center items-center mx-2">
           <TouchableOpacity
             onPress={() => handleScoreChange(-1)}
-            className="p-2 bg-gray-700 rounded-lg"
+            className="p-1.5 bg-gray-700 rounded-lg"
           >
             <Ionicons name="remove" size={24} color="white" />
           </TouchableOpacity>
-          <Text className="text-white text-2xl font-semibold text-center py-1 px-2 bg-teal-500 rounded-lg my-2">
+          <Text className="text-white text-2xl font-semibold text-center py-1 px-1.5 min-w-12 bg-teal-500 rounded-lg my-2">
             {score}
           </Text>
           <TouchableOpacity
             onPress={() => handleScoreChange(1)}
-            className="p-2 bg-gray-700 rounded-lg"
+            className="p-1.5 bg-gray-700 rounded-lg"
           >
             <Ionicons name="add" size={24} color="white" />
           </TouchableOpacity>
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => setScore(0)}
-            className="p-2 bg-gray-700 rounded-lg"
+            className="p-1.5 bg-gray-700 rounded-lg"
           >
             <Ionicons name="reload" size={24} color="white" />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </View>
 

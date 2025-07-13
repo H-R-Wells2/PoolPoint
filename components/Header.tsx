@@ -1,9 +1,16 @@
-// import { Ionicons } from "@expo/vector-icons";
-// import { router } from "expo-router";
+import { useGameStore } from "@/store/game.store";
+import { usePathname } from "expo-router";
 import React from "react";
 import { Image, Text, View } from "react-native";
+import Timer from "./Timer";
 
 const Header: React.FC = () => {
+  const { teamGameStarted, gameStarted } = useGameStore();
+  const pathname = usePathname();
+
+  const isTeamGameplayRoute = pathname === "/team-gameplay";
+  const isGameplayRoute = pathname === "/gameplay";
+
   return (
     <View className="w-full fixed top-0 z-10 px-6 pb-4 pt-3">
       <View className="flex flex-row justify-between items-center">
@@ -30,9 +37,14 @@ const Header: React.FC = () => {
           </Text>
         </View>
 
-        {/* <Pressable onPress={() => router.push("/")}>
-          <Ionicons name="person-circle-outline" size={38} color="#ffffff" />
-        </Pressable> */}
+        {/* Only show Timer on /team-gameplay */}
+        {isTeamGameplayRoute && teamGameStarted && (
+          <Timer isActive={teamGameStarted} mode="team" />
+        )}
+
+        {isGameplayRoute && gameStarted && (
+          <Timer isActive={gameStarted} mode="game" />
+        )}
       </View>
     </View>
   );

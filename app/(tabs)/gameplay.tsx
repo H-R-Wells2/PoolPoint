@@ -102,7 +102,7 @@ const GamePlay: React.FC = () => {
   return (
     <>
       <ScrollView>
-        <View className="flex-1 items-center my-8">
+        <View className="flex-1 items-center mb-8 mt-4">
           <View className="w-full flex flex-col justify-center items-center px-4 gap-4">
             {playerNames.map((name, index) => (
               <PlayerCard

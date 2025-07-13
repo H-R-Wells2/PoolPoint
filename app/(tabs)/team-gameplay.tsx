@@ -29,7 +29,7 @@ const TeamGamePlay = () => {
     totalTableAmount,
 
     teamGameStarted,
-    resetGame,
+    resetTeamGame,
   } = useGameStore();
 
   const [submitting, setSubmitting] = useState(false);
@@ -123,7 +123,7 @@ const TeamGamePlay = () => {
 
       if (!response.ok) throw new Error("Failed to submit game");
 
-      resetGame();
+      resetTeamGame();
       router.replace("/(tabs)/history");
     } catch (error) {
       console.error("Error submitting game:", error);
@@ -139,7 +139,7 @@ const TeamGamePlay = () => {
 
   return (
     <ScrollView>
-      <View className="flex-1 items-center my-8">
+      <View className="flex-1 items-center mb-8 mt-4">
         {!teamGameStarted ? (
           <Text className="text-white text-xl mt-20">
             Start the game from setup tab first.

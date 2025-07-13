@@ -26,7 +26,7 @@ const TeamFormScreen: React.FC = () => {
     setTeam1Players,
     setTeam2Name,
     setTeam2Players,
-    startGame,
+    startTeamGame,
     teamGameStarted,
   } = useGameStore();
 
@@ -124,7 +124,7 @@ const TeamFormScreen: React.FC = () => {
     setTeam2Name(localTeamNames[1]);
     setTeam1Players(team1Names);
     setTeam2Players(team2Names);
-    startGame();
+    startTeamGame();
     router.push("/team-gameplay");
   };
 
