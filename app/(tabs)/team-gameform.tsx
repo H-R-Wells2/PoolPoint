@@ -231,7 +231,7 @@ const TeamFormScreen: React.FC = () => {
             className="text-white text-lg text-center"
             style={{ fontFamily: "Poppins_600SemiBold" }}
           >
-            Start Game
+            Start {teamGameStarted && "New"} Game
           </Text>
         </TouchableOpacity>
       </View>

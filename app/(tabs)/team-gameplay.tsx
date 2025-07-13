@@ -1,4 +1,4 @@
-import PlayerCard from "@/components/PlayerCard";
+import TeamPlayerCard from "@/components/TeamPlayerCard";
 import { useGameStore } from "@/store/game.store";
 import { router } from "expo-router";
 import React, { useState } from "react";
@@ -16,13 +16,15 @@ const TeamGamePlay = () => {
   const {
     team1Name,
     team1Players,
-    team1Score,
-    setTeam1Score,
+    team1Scores,
+    setTeam1Scores,
+    setTeam1Players,
 
     team2Name,
     team2Players,
-    team2Score,
-    setTeam2Score,
+    team2Scores,
+    setTeam2Scores,
+    setTeam2Players,
 
     totalTableAmount,
 
@@ -37,9 +39,12 @@ const TeamGamePlay = () => {
     try {
       setSubmitting(true);
 
-      const team1Won = team1Score > team2Score;
-      const team2Won = team2Score > team1Score;
-      const draw = team1Score === team2Score;
+      const team1Total = team1Scores.reduce((sum, val) => sum + val, 0);
+      const team2Total = team2Scores.reduce((sum, val) => sum + val, 0);
+
+      const team1Won = team1Total > team2Total;
+      const team2Won = team2Total > team1Total;
+      const draw = team1Total === team2Total;
 
       const winningAmount = totalTableAmount * 0.3;
       const losingAmount = totalTableAmount * 0.7;
@@ -79,27 +84,10 @@ const TeamGamePlay = () => {
           : losingAmount / team2PlayerCount;
       }
 
-      const team1BaseScore = Math.floor(team1Score / team1PlayerCount);
-      const team1Remainder = team1Score % team1PlayerCount;
-
-      const team2BaseScore = Math.floor(team2Score / team2PlayerCount);
-      const team2Remainder = team2Score % team2PlayerCount;
-
-      let allPlayers: {
-        playerName: string;
-        score: number;
-        amount: number;
-        isTeamWon: boolean;
-      }[] = [];
-
       let rawPlayers = [
         ...team1Players.map((player, index) => ({
           playerName: player,
-          score: draw
-            ? team1Score / team1PlayerCount
-            : index < team1Remainder
-              ? team1BaseScore + 1
-              : team1BaseScore,
+          score: team1Scores[index],
           amount: draw
             ? totalTableAmount / (team1PlayerCount + team2PlayerCount)
             : Math.floor(team1AmountPerPlayer),
@@ -107,11 +95,7 @@ const TeamGamePlay = () => {
         })),
         ...team2Players.map((player, index) => ({
           playerName: player,
-          score: draw
-            ? team2Score / team2PlayerCount
-            : index < team2Remainder
-              ? team2BaseScore + 1
-              : team2BaseScore,
+          score: team2Scores[index],
           amount: draw
             ? totalTableAmount / (team1PlayerCount + team2PlayerCount)
             : Math.floor(team2AmountPerPlayer),
@@ -128,14 +112,12 @@ const TeamGamePlay = () => {
         }
       }
 
-      allPlayers = rawPlayers;
-
       const response = await fetch(
         "https://poolpoint-backend.vercel.app/api/results",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ players: allPlayers }),
+          body: JSON.stringify({ players: rawPlayers }),
         }
       );
 
@@ -164,35 +146,40 @@ const TeamGamePlay = () => {
           </Text>
         ) : (
           <View className="w-full flex flex-col justify-center items-center px-4 gap-6">
-            <PlayerCard
+            <TeamPlayerCard
               name={team1Name}
               players={team1Players}
-              score={team1Score}
-              setScore={setTeam1Score}
+              scores={team1Scores}
+              setScores={setTeam1Scores}
+              onPlayerNameChange={(index: number, newName: string) => {
+                const updated = [...team1Players];
+                updated[index] = newName;
+                setTeam1Players(updated);
+              }}
             />
-            <PlayerCard
+
+            <TeamPlayerCard
               name={team2Name}
               players={team2Players}
-              score={team2Score}
-              setScore={setTeam2Score}
+              scores={team2Scores}
+              setScores={setTeam2Scores}
+              onPlayerNameChange={(index: number, newName: string) => {
+                const updated = [...team2Players];
+                updated[index] = newName;
+                setTeam2Players(updated);
+              }}
             />
 
             <TouchableOpacity
               onPress={() => setShowConfirmModal(true)}
               className="bg-teal-500 p-3 rounded-lg w-full max-w-[90vw] flex items-center justify-center"
-              disabled={submitting}
-              style={{ opacity: submitting ? 0.6 : 1 }}
             >
-              {submitting ? (
-                <ActivityIndicator color="#fff" className="py-0.5" />
-              ) : (
-                <Text
-                  className="text-white text-lg text-center font-semibold"
-                  style={{ fontFamily: "Poppins_600SemiBold" }}
-                >
-                  Submit Game
-                </Text>
-              )}
+              <Text
+                className="text-white text-lg text-center font-semibold"
+                style={{ fontFamily: "Poppins_600SemiBold" }}
+              >
+                Submit Game
+              </Text>
             </TouchableOpacity>
           </View>
         )}
@@ -222,11 +209,17 @@ const TeamGamePlay = () => {
 
               <TouchableOpacity
                 className="px-4 py-2 bg-teal-500 rounded-md flex-1 ml-2"
+                disabled={submitting}
                 onPress={handleSubmit}
+                style={{ opacity: submitting ? 0.6 : 1 }}
               >
-                <Text className="text-center text-white font-medium">
-                  Confirm
-                </Text>
+                {submitting ? (
+                  <ActivityIndicator color="#fff" className="py-0.5" />
+                ) : (
+                  <Text className="text-center text-white font-medium">
+                    Confirm
+                  </Text>
+                )}
               </TouchableOpacity>
             </View>
           </View>

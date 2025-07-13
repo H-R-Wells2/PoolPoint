@@ -117,20 +117,14 @@ const GamePlay: React.FC = () => {
 
             <TouchableOpacity
               onPress={() => setShowConfirmModal(true)}
-              disabled={submitting}
               className="bg-teal-500 p-3 rounded-lg w-full max-w-[90vw] flex items-center justify-center"
-              style={{ opacity: submitting ? 0.6 : 1 }}
             >
-              {submitting ? (
-                <ActivityIndicator color="#fff" className="py-0.5" />
-              ) : (
-                <Text
-                  className="text-white text-lg text-center font-semibold"
-                  style={{ fontFamily: "Poppins_600SemiBold" }}
-                >
-                  Submit Result
-                </Text>
-              )}
+              <Text
+                className="text-white text-lg text-center font-semibold"
+                style={{ fontFamily: "Poppins_600SemiBold" }}
+              >
+                Submit Result
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -160,11 +154,17 @@ const GamePlay: React.FC = () => {
 
               <TouchableOpacity
                 className="px-4 py-2 bg-teal-500 rounded-md flex-1 ml-2"
+                disabled={submitting}
                 onPress={submitResult}
+                style={{ opacity: submitting ? 0.6 : 1 }}
               >
-                <Text className="text-center text-white font-medium">
-                  Confirm
-                </Text>
+                {submitting ? (
+                  <ActivityIndicator color="#fff" className="py-0.5" />
+                ) : (
+                  <Text className="text-center text-white font-medium">
+                    Confirm
+                  </Text>
+                )}
               </TouchableOpacity>
             </View>
           </View>
