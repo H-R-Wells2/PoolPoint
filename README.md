@@ -1,50 +1,165 @@
-# Welcome to your Expo app 👋
+# 🎱 PoolPoint
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Cross-platform mobile app for tracking snooker and pool games. PoolPoint lets you log scores, track payments, analyze player performance, and more perfect for casual or competitive play.
 
-## Get started
+---
 
-1. Install dependencies
+## 📱 Overview
+
+PoolPoint is designed to offer a clean, intuitive experience for both individuals and teams. It allows players to:
+
+* Log individual and team games
+* Monitor payments
+* Access complete game history
+* View player statistics and performance summaries
+
+---
+
+## ✨ Key Features
+
+* ✅ Record individual and team games with player names, scores, and payment tracking
+* ✅ View daily summaries: total games, payments, and top performers
+* ✅ Analyze performance with last-game and full history stats
+* ✅ Built-in **Game Timer** to track match durations
+* ✅ Efficient state management with **Zustand** for fast UI updates
+* ✅ Seamless navigation via **Expo App Router**
+* ✅ Consistent mobile-optimized UI with **Ionicons**
+
+---
+
+## 🛠️ Technology Stack
+
+| Tech                | Purpose                             |
+| ------------------- | ----------------------------------- |
+| React Native & Expo | Cross-platform app development      |
+| Zustand             | Lightweight global state management |
+| Expo App Router     | File-based routing and screen nav   |
+| Fetch API           | Backend API communication           |
+| Ionicons            | Icon set for UI                     |
+
+---
+
+## ⚙️ Installation and Setup
+
+1. **Clone the repository**
+
+   ```bash
+   git clone https://github.com/H-R-Wells2/PoolPoint.git
+   ```
+
+2. **Navigate to project directory**
+
+   ```bash
+   cd poolpoint
+   ```
+
+3. **Install dependencies**
 
    ```bash
    npm install
+   # or
+   yarn install
    ```
 
-2. Start the app
+4. **Start development server**
 
    ```bash
    npx expo start
+   # or
+   yarn expo start
    ```
 
-In the output, you'll find options to open the app in a
+5. **Run on device/emulator**
+   Use **Expo Go** or simulator to preview the app.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+6. **(Optional)**
+   Update API endpoints in the app if using a custom backend.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+---
 
-## Get a fresh project
+## 📲 Usage Instructions
 
-When you're ready, run:
+* **Launch App** → Dashboard instantly loads cached data while updating from the backend.
+* **Main Options**:
 
-```bash
-npm run reset-project
+  * 🎯 Start a New Game (Individual)
+  * 👥 Start a Team Game (2v2)
+  * 🕘 View Games History (Select a date to see games played that day and payment summary based on rank)
+  * ⚙️ Settings
+* **Gameplay**:
+
+  * Update scores
+  * Save to log game history
+  * Use timer to track duration
+  * All game data is saved automatically and accessible in the History screen
+* **Dashboard**:
+
+  * See daily summary
+  * View last game breakdown
+
+---
+
+## 📁 Project Structure
+
+```
+/app          # Screens & routes via Expo App Router
+/assets       # Fonts, images, icons
+/store        # Zustand store (state management)
+/components   # Reusable UI elements
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+---
 
-## Learn more
+## 🐛 Known Issues & ✅ Future Improvements
 
-To learn more about developing your project with Expo, look at the following resources:
+* [x] Optimize "Your Activity"
+* [x] Disable button on submit
+* [x] Each player points count in team game
+* [ ] Improve design for alert dialogs
+* [ ] Add tick sound on input
+* [x] Improved timer controls
+* [ ] Player amount customization
+* [ ] Authentication system
+* [x] Fix animation on submit
+* [ ] Ability to delete games
+* [ ] Ability to select multiple games
+* [ ] Offline storage with AsyncStorage/SQLite
+* [ ] Enhanced game analytics with charts
+* [ ] Notification/reminders for scheduled games
+* [ ] Improve UI animations and error handling
+* [ ] Add support for user profiles
+* [ ] Reduce APK size for production
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+---
 
-## Join the community
+## 🤝 Contributing
 
-Join our community of developers creating universal apps.
+We welcome contributions!
+To contribute:
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+1. Fork the repo
+2. Create a branch:
+
+   ```bash
+   git checkout -b feature/your-feature
+   ```
+3. Commit your changes:
+
+   ```bash
+   git commit -m 'Add feature'
+   ```
+4. Push and open a pull request:
+
+   ```bash
+   git push origin feature/your-feature
+   ```
+
+✅ Make sure your code follows the existing style and passes linting.
+
+---
+
+## 📬 Support & Contact
+
+For issues, suggestions, or bugs:
+**GitHub Issues** or email at:
+📧 [kadamshubham10246@gmail.com](mailto:kadamshubham10246@gmail.com)
