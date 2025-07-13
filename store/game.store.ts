@@ -5,11 +5,9 @@ export type GameState = {
   team1Name: string;
   team1Players: string[];
   team1Scores: number[];
-
   team2Name: string;
   team2Players: string[];
   team2Scores: number[];
-
   teamGameStarted: boolean;
   teamTimerSeconds: number;
   teamTimerInterval: number | null;
@@ -22,6 +20,21 @@ export type GameState = {
   gameTimerSeconds: number;
   gameTimerInterval: number | null;
 
+  // Dashboard Data
+  todaySummary: {
+    gamesPlayed: number;
+    totalPaid: number;
+    topPlayer: string;
+  } | null;
+
+  lastGame: {
+    game: {
+      _id: string;
+      players: { playerName: string; score: number }[];
+    };
+    winner: string;
+  } | null;
+
   // Setters
   setTotalTableAmount: (amount: number) => void;
   setTeam1Name: (name: string) => void;
@@ -33,15 +46,17 @@ export type GameState = {
   setPlayerNames: (names: string[]) => void;
   setPlayerScores: (scores: { [key: string]: number }) => void;
 
+  setTodaySummary: (summary: GameState["todaySummary"]) => void;
+  setLastGame: (game: GameState["lastGame"]) => void;
+
   // Game control
   startGame: () => void;
   resetGame: () => void;
 
-  // Team game control
   startTeamGame: () => void;
   resetTeamGame: () => void;
 
-  // Timer control
+  // Timer
   startGameTimer: () => void;
   stopGameTimer: () => void;
   resetGameTimer: () => void;
@@ -52,7 +67,7 @@ export type GameState = {
 };
 
 export const useGameStore = create<GameState>((set, get) => ({
-  // Initial State
+  // Initial game state...
   team1Name: "Team 1",
   team1Players: ["Player 1", "Player 2"],
   team1Scores: [0, 0],
@@ -70,6 +85,10 @@ export const useGameStore = create<GameState>((set, get) => ({
   gameTimerSeconds: 0,
   gameTimerInterval: null,
 
+  // Dashboard state
+  todaySummary: null,
+  lastGame: null,
+
   // Setters
   setTotalTableAmount: (amount) => set({ totalTableAmount: amount }),
   setTeam1Name: (name) => set({ team1Name: name }),
@@ -81,13 +100,15 @@ export const useGameStore = create<GameState>((set, get) => ({
   setPlayerNames: (names) => set({ playerNames: names }),
   setPlayerScores: (scores) => set({ playerScores: scores }),
 
-  // Normal Game
+  setTodaySummary: (summary) => set({ todaySummary: summary }),
+  setLastGame: (game) => set({ lastGame: game }),
+
+  // Game logic
   startGame: () => {
     get().resetGameTimer();
     const interval = setInterval(() => {
       set((state) => ({ gameTimerSeconds: state.gameTimerSeconds + 1 }));
     }, 1000);
-
     set({
       gameStarted: true,
       playerScores: {},
@@ -108,13 +129,11 @@ export const useGameStore = create<GameState>((set, get) => ({
     });
   },
 
-  // Team Game
   startTeamGame: () => {
     get().resetTeamTimer();
     const interval = setInterval(() => {
       set((state) => ({ teamTimerSeconds: state.teamTimerSeconds + 1 }));
     }, 1000);
-
     set({
       teamGameStarted: true,
       team1Name: "Team 1",
@@ -144,7 +163,6 @@ export const useGameStore = create<GameState>((set, get) => ({
     });
   },
 
-  // Game Timer Controls
   startGameTimer: () => {
     if (get().gameTimerInterval !== null) return;
     const interval = setInterval(() => {
@@ -165,7 +183,6 @@ export const useGameStore = create<GameState>((set, get) => ({
     set({ gameTimerSeconds: 0, gameTimerInterval: null });
   },
 
-  // Team Timer Controls
   startTeamTimer: () => {
     if (get().teamTimerInterval !== null) return;
     const interval = setInterval(() => {
