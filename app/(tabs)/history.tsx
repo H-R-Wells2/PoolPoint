@@ -44,7 +44,12 @@ const HistoryScreen: React.FC = () => {
         "https://poolpoint-backend.vercel.app/api/unique-dates"
       );
       const json = await resp.json();
-      setUniqueDates(json.data || []);
+      const fetchedDates = json.data || [];
+      setUniqueDates(fetchedDates);
+
+      if (!selectedDate && fetchedDates.length > 0) {
+        setSelectedDate(fetchedDates[0]);
+      }
     } catch (e) {
       console.error("Failed to fetch unique dates:", e);
     }
@@ -307,7 +312,16 @@ const HistoryScreen: React.FC = () => {
             )}
           </>
         }
-        renderItem={({ item }) => <ResultCard result={item} isAdmin={false} />}
+        renderItem={({ item }) => (
+          <ResultCard
+            result={item}
+            isAdmin={false}
+            onDeleteSuccess={() => {
+              if (selectedDate) fetchDateResults();
+              else fetchHistory(true);
+            }}
+          />
+        )}
         ListEmptyComponent={
           <View className="p-5">
             <Text className="text-white text-center">
