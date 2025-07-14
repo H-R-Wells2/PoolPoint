@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import PlayerCard from "@/components/PlayerCard";
 import { useGameStore } from "@/store/game.store";
 import { useRouter } from "expo-router";
@@ -29,13 +28,23 @@ const GamePlay: React.FC = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const calculateAmounts = (count: number): number[] => {
+    if (count === 2) {
+      const scores = Object.values(playerScores);
+      const score1 = scores[0] ?? 0;
+      const score2 = scores[1] ?? 0;
+
+      if (isLP && score1 === score2) {
+        return [50, 50];
+      }
+
+      if (isLP) {
+        return [0, 100];
+      }
+
+      return [50, 50];
+    }
+
     switch (count) {
-      case 2:
-        if (isLP) {
-          return [0, totalTableAmount];
-        } else {
-          return [50, 50];
-        }
       case 3:
         return [25, 32, 43];
       case 4:
@@ -59,28 +68,35 @@ const GamePlay: React.FC = () => {
   const submitResult = async (): Promise<void> => {
     setSubmitting(true);
 
-    const sorted = Object.entries(playerScores).sort((a, b) => b[1] - a[1]) as [
-      string,
-      number,
-    ][];
-
-    const percentages: number[] = calculateAmounts(sorted.length);
-
-    const rawAmounts: number[] = percentages.map((p) =>
-      Math.floor((p / 100) * totalTableAmount)
-    );
-
-    const totalSoFar = rawAmounts.reduce((sum, amt) => sum + amt, 0);
-    const remainder = totalTableAmount - totalSoFar;
-    rawAmounts[rawAmounts.length - 1] += remainder;
-
-    const players: PlayerResult[] = sorted.map(([playerName, score], i) => ({
-      playerName,
-      score,
-      amount: rawAmounts[i],
-    }));
-
     try {
+      const allScores: PlayerScoreMap = {};
+      playerNames.forEach((name) => {
+        const rawScore = playerScores[name];
+        const safeScore =
+          typeof rawScore === "number" && !isNaN(rawScore) ? rawScore : 0;
+        allScores[name] = safeScore;
+      });
+
+      const sorted = Object.entries(allScores).sort((a, b) => b[1] - a[1]);
+
+      const percentages: number[] = calculateAmounts(sorted.length);
+
+      const rawAmounts: number[] = percentages.map((p) =>
+        Math.floor((p / 100) * totalTableAmount)
+      );
+
+      const totalSoFar = rawAmounts.reduce((sum, amt) => sum + amt, 0);
+      const remainder = totalTableAmount - totalSoFar;
+      if (rawAmounts.length > 0) {
+        rawAmounts[rawAmounts.length - 1] += remainder;
+      }
+
+      const players: PlayerResult[] = sorted.map(([playerName, score], i) => ({
+        playerName,
+        score,
+        amount: rawAmounts[i] ?? 0,
+      }));
+
       const res = await fetch(
         "https://poolpoint-backend.vercel.app/api/results",
         {
@@ -90,13 +106,14 @@ const GamePlay: React.FC = () => {
         }
       );
 
-      if (!res.ok) throw new Error();
+      if (!res.ok) throw new Error("API response not OK");
 
       setPlayerNames([]);
       setPlayerScores({});
       resetGame();
       router.replace("/history");
     } catch (error) {
+      console.error("Submit error:", error);
       Alert.alert("Error", "Failed to submit result. Try again.");
     } finally {
       setSubmitting(false);

@@ -46,8 +46,8 @@ export type GameState = {
   setTeam2Scores: (scores: number[]) => void;
   setPlayerNames: (names: string[]) => void;
   setPlayerScores: (scores: { [key: string]: number }) => void;
-  setIsLP: (value: boolean) => void; // ✅ optional direct setter
-  toggleLP: () => void; // ✅ added toggle method
+  setIsLP: (value: boolean) => void;
+  toggleLP: () => void;
 
   setTodaySummary: (summary: GameState["todaySummary"]) => void;
   setLastGame: (game: GameState["lastGame"]) => void;
@@ -103,8 +103,8 @@ export const useGameStore = create<GameState>((set, get) => ({
   setTeam2Scores: (scores) => set({ team2Scores: scores }),
   setPlayerNames: (names) => set({ playerNames: names }),
   setPlayerScores: (scores) => set({ playerScores: scores }),
-  setIsLP: (value) => set({ isLP: value }), // ✅ direct setter
-  toggleLP: () => set((state) => ({ isLP: !state.isLP })), // ✅ toggle function
+  setIsLP: (value) => set({ isLP: value }),
+  toggleLP: () => set((state) => ({ isLP: !state.isLP })),
 
   setTodaySummary: (summary) => set({ todaySummary: summary }),
   setLastGame: (game) => set({ lastGame: game }),

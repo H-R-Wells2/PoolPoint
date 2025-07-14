@@ -23,7 +23,7 @@ const GameFormScreen: React.FC = () => {
     gameStarted,
     startGame,
     isLP,
-    setIsLP
+    setIsLP,
   } = useGameStore();
   const inputRefs = useRef<(TextInput | null)[]>([]);
 
@@ -91,26 +91,40 @@ const GameFormScreen: React.FC = () => {
   };
 
   return (
-    <ScrollView>
-      <Pressable onPress={()=>setIsLP(!isLP)} className="flex-row items-center justify-start gap-2 w-[85vw] mx-auto mt-4 mb-1">
+    <ScrollView className="w-[85vw] mx-auto">
+      <Pressable
+        onPress={() => {
+          if (playerCount === 2) {
+            setIsLP(!isLP);
+          }
+        }}
+        className="flex-row items-center justify-start gap-1 mt-4 mb-1 w-1/2"
+      >
         <Text
           style={{
-            color: "white",
+            color: playerCount === 2 ? "white" : "#9ca3af",
             fontFamily: "Poppins_600SemiBold",
             fontSize: 16,
           }}
         >
-          Looser-Pays
-          {isLP ? " Enabled" : " Disabled"}
+          Loser-Pays
         </Text>
         <Switch
           value={isLP}
-          onValueChange={()=>setIsLP(!isLP)}
-          thumbColor={isLP ? "#14b8a6" : "#f4f3f4"}
-          trackColor={{ false: "#767577", true: "#0f766e" }}
+          onValueChange={() => setIsLP(!isLP)}
+          disabled={playerCount !== 2}
+          thumbColor={
+            playerCount === 2 ? (isLP ? "#14b8a6" : "#f4f3f4") : "#9ca3af"
+          }
+          trackColor={
+            playerCount === 2
+              ? { false: "#767577", true: "#0f766e" }
+              : { false: "#9ca3af", true: "#9ca3af" }
+          }
         />
       </Pressable>
-      <View className="flex justify-center items-center rounded-lg w-[85vw] mx-auto">
+
+      <View className="flex justify-center items-center">
         <View className="mx-auto w-full flex-1 flex-row mb-5 justify-between">
           {[2, 3, 4].map((count) => (
             <Pressable
@@ -145,7 +159,7 @@ const GameFormScreen: React.FC = () => {
             value={name}
             onChangeText={(text) => handlePlayerNameChange(index, text)}
             placeholder={`Player ${index + 1}`}
-            className="mb-2 p-2.5 rounded-lg border border-slate-400 w-full placeholder:text-slate-500"
+            className="mb-2 p-2.5 rounded-lg border border-slate-300 w-full placeholder:text-slate-500"
             style={{
               backgroundColor: "#1e293b",
               color: "white",

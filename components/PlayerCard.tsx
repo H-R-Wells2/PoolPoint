@@ -18,14 +18,12 @@ const PlayerCard = ({ name, players, score, setScore }: Props) => {
     <View className="bg-slate-800 rounded-xl px-4 py-5 max-w-[90vw] w-full">
       <View className="flex-row justify-between items-center mb-5 border-b border-gray-600 pb-3">
         <View className="flex-1 flex-col mr-2">
-          <Text className="text-2xl text-white font-normal">{name}</Text>
-          <View>
-            {players?.map((player, index) => (
-              <Text key={index} className="text-slate-400 text-xs">
-                {index + 1}. {player}
-              </Text>
-            ))}
-          </View>
+          <Text
+            className="text-2xl text-white"
+            style={{ fontFamily: "Inter_500Medium" }}
+          >
+            {name}
+          </Text>
         </View>
         <View className="flex flex-row gap-2 justify-center items-center mx-2">
           <TouchableOpacity

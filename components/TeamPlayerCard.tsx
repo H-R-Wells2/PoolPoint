@@ -31,15 +31,15 @@ const TeamPlayerCard = ({
 
   return (
     <View className="w-[90vw] bg-slate-800 rounded-xl border border-gray-900 overflow-hidden pb-3">
-      <View className="flex flex-row justify-between items-center w-full px-3 bg-slate-700 py-3">
+      <View className="flex flex-row justify-between items-center w-full px-3 bg-slate-700 py-2">
         <Text
-          className="text-white text-[1.7rem]"
-          style={{ fontFamily: "Inter_500Medium" }}
+          className="text-white text-2xl font-semibold"
+          // style={{ fontFamily: "Inter_500Medium" }}
         >
           {name}
         </Text>
         <Text
-          className="text-white text-[1.7rem] w-1/3 text-center border border-teal-500 p-1 bg-slate-800 rounded-lg"
+          className="text-white text-2xl w-1/3 text-center border border-teal-500 p-1 bg-slate-800 rounded-lg"
           style={{ fontFamily: "Inter_500Medium" }}
         >
           {scores[0]+scores[1]}
@@ -53,7 +53,7 @@ const TeamPlayerCard = ({
             <View className="flex-1 flex-row items-center gap-2">
               {editingIndex === index ? (
                 <TextInput
-                  className="text-2xl text-white font-normal border-b border-teal-500"
+                  className="text-xl text-white font-normal border-b border-teal-500"
                   style={{
                     fontFamily: "Inter_500Medium",
                     paddingVertical: 0,
@@ -74,7 +74,7 @@ const TeamPlayerCard = ({
                 />
               ) : (
                 <Text
-                  className="text-2xl text-white font-normal"
+                  className="text-xl text-white"
                   style={{ fontFamily: "Inter_500Medium" }}
                 >
                   {player}

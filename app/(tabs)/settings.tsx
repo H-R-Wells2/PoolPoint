@@ -40,7 +40,7 @@ const Settings: React.FC = () => {
           onChangeText={setAmount}
           keyboardType="numeric"
           placeholder="Enter amount"
-          className="border border-slate-300 rounded-lg px-4 py-3"
+          className="border border-slate-400 rounded-lg px-4 py-3"
           style={{
             backgroundColor: "#1e293b",
             color: "white",

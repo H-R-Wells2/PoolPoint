@@ -146,7 +146,7 @@ const TeamFormScreen: React.FC = () => {
         {[0, 1].map((teamIdx) => (
           <View
             key={teamIdx}
-            className={`w-full mb-6 ${teamIdx === 1 ? "pt-5 border-t border-slate-300" : ""}`}
+            className={`w-full ${teamIdx === 1 ? "pt-4 mb-4 border-t border-slate-300" : "mb-6"}`}
           >
             {editingTeamIndex === teamIdx ? (
               <View className="flex-row items-center">
@@ -181,7 +181,7 @@ const TeamFormScreen: React.FC = () => {
                   handlePlayerNameChange(teamIdx, idx, text)
                 }
                 placeholder={`Player ${idx + 1} of Team ${teamIdx + 1}`}
-                className="mb-2 p-2.5 rounded-lg border border-slate-400 w-full placeholder:text-slate-500"
+                className="mb-2 p-2.5 rounded-lg border border-slate-300 w-full placeholder:text-slate-500"
                 style={{
                   backgroundColor: "#1e293b",
                   color: "white",
