@@ -6,7 +6,7 @@ export default function _layout() {
   return (
     <SafeAreaView className="flex-1 bg-[#111827]">
       <Header />
-      <Slot />    
+      <Slot />
     </SafeAreaView>
   );
 }

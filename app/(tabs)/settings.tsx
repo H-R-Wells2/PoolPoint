@@ -40,16 +40,19 @@ const Settings: React.FC = () => {
           onChangeText={setAmount}
           keyboardType="numeric"
           placeholder="Enter amount"
-          className="border border-gray-300 rounded-lg px-4 py-3"
-          style={{ backgroundColor: "#fff", fontFamily: "Inter_500Medium" }}
+          className="border border-slate-300 rounded-lg px-4 py-3"
+          style={{
+            backgroundColor: "#1e293b",
+            color: "white",
+            fontFamily: "Inter_500Medium",
+          }}
         />
-
         <TouchableOpacity
           onPress={handleSave}
-          className="bg-teal-500 p-3 rounded-lg w-full max-w-[90vw] flex items-center justify-center"
+          className="bg-teal-500 p-2.5 rounded-lg w-full"
         >
           <Text
-            className="text-white text-lg text-center font-semibold"
+            className="text-white text-lg text-center"
             style={{ fontFamily: "Poppins_600SemiBold" }}
           >
             Save

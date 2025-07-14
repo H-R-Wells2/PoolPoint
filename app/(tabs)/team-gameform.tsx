@@ -142,18 +142,18 @@ const TeamFormScreen: React.FC = () => {
 
   return (
     <ScrollView>
-      <View className="flex justify-center items-center rounded-lg mx-10 mt-8">
+      <View className="flex justify-center items-center rounded-lg w-[85vw] mx-auto mt-4">
         {[0, 1].map((teamIdx) => (
           <View
             key={teamIdx}
-            className={`w-full mb-6 ${teamIdx === 1 ? "pt-6 border-t-2 border-slate-200" : ""}`}
+            className={`w-full mb-6 ${teamIdx === 1 ? "pt-5 border-t border-slate-300" : ""}`}
           >
             {editingTeamIndex === teamIdx ? (
               <View className="flex-row items-center">
                 <TextInput
                   value={localTeamNames[teamIdx]}
                   onChangeText={(text) => handleTeamNameChange(teamIdx, text)}
-                  className="mb-2 p-2.5 text-lg rounded-lg border border-gray-300 w-3/4"
+                  className="mb-2 p-2.5 text-lg rounded-lg border border-slate-400 w-3/4"
                   style={{ color: "white" }}
                 />
                 <TouchableOpacity onPress={() => setEditingTeamIndex(null)}>
@@ -181,9 +181,10 @@ const TeamFormScreen: React.FC = () => {
                   handlePlayerNameChange(teamIdx, idx, text)
                 }
                 placeholder={`Player ${idx + 1} of Team ${teamIdx + 1}`}
-                className="mb-2 p-2.5 rounded-lg border border-gray-300 w-full placeholder:text-slate-400"
+                className="mb-2 p-2.5 rounded-lg border border-slate-400 w-full placeholder:text-slate-500"
                 style={{
-                  backgroundColor: "white",
+                  backgroundColor: "#1e293b",
+                  color: "white",
                   fontFamily: "Inter_500Medium",
                 }}
                 ref={(el) => {
@@ -196,18 +197,32 @@ const TeamFormScreen: React.FC = () => {
           </View>
         ))}
 
-        <TouchableOpacity
-          onPress={shufflePlayers}
-          disabled={shuffling}
-          className={`bg-teal-500 p-2.5 rounded-lg mt-4 w-full ${shuffling ? "opacity-50" : ""}`}
-        >
-          <Text
-            className="text-white text-lg text-center"
-            style={{ fontFamily: "Poppins_600SemiBold" }}
+        <View className="flex flex-row justify-between w-[85vw]">
+          <TouchableOpacity
+            onPress={shufflePlayers}
+            disabled={shuffling}
+            className={`bg-teal-500 p-2.5 rounded-lg w-[48%] ${shuffling ? "opacity-50" : ""}`}
           >
-            {shuffling ? "Shuffling..." : "Shuffle Players"}
-          </Text>
-        </TouchableOpacity>
+            <Text
+              className="text-white text-lg text-center"
+              style={{ fontFamily: "Poppins_600SemiBold" }}
+            >
+              {shuffling ? "Shuffling..." : "Shuffle Players"}
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={handleStartGame}
+            className="bg-teal-500 p-2.5 rounded-lg w-[48%]"
+          >
+            <Text
+              className="text-white text-lg text-center"
+              style={{ fontFamily: "Poppins_600SemiBold" }}
+            >
+              {teamGameStarted ? "New" : "Start"} Game
+            </Text>
+          </TouchableOpacity>
+        </View>
 
         {teamGameStarted && (
           <TouchableOpacity
@@ -222,18 +237,6 @@ const TeamFormScreen: React.FC = () => {
             </Text>
           </TouchableOpacity>
         )}
-
-        <TouchableOpacity
-          onPress={handleStartGame}
-          className="bg-teal-500 p-2.5 rounded-lg mt-4 w-full"
-        >
-          <Text
-            className="text-white text-lg text-center"
-            style={{ fontFamily: "Poppins_600SemiBold" }}
-          >
-            Start {teamGameStarted && "New"} Game
-          </Text>
-        </TouchableOpacity>
       </View>
     </ScrollView>
   );

@@ -22,6 +22,7 @@ const GamePlay: React.FC = () => {
     setPlayerScores,
     totalTableAmount,
     resetGame,
+    isLP,
   } = useGameStore();
 
   const [submitting, setSubmitting] = useState(false);
@@ -30,7 +31,11 @@ const GamePlay: React.FC = () => {
   const calculateAmounts = (count: number): number[] => {
     switch (count) {
       case 2:
-        return [50, 50];
+        if (isLP) {
+          return [0, totalTableAmount];
+        } else {
+          return [50, 50];
+        }
       case 3:
         return [25, 32, 43];
       case 4:

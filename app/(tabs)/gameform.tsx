@@ -6,6 +6,7 @@ import {
   Keyboard,
   Pressable,
   ScrollView,
+  Switch,
   Text,
   TextInput,
   TouchableOpacity,
@@ -20,7 +21,9 @@ const GameFormScreen: React.FC = () => {
     setPlayerNames: setStoreNames,
     setPlayerScores,
     gameStarted,
-    startGame
+    startGame,
+    isLP,
+    setIsLP
   } = useGameStore();
   const inputRefs = useRef<(TextInput | null)[]>([]);
 
@@ -89,7 +92,25 @@ const GameFormScreen: React.FC = () => {
 
   return (
     <ScrollView>
-      <View className="flex justify-center items-center rounded-lg mx-10 mt-10">
+      <Pressable onPress={()=>setIsLP(!isLP)} className="flex-row items-center justify-start gap-2 w-[85vw] mx-auto mt-4 mb-1">
+        <Text
+          style={{
+            color: "white",
+            fontFamily: "Poppins_600SemiBold",
+            fontSize: 16,
+          }}
+        >
+          Looser-Pays
+          {isLP ? " Enabled" : " Disabled"}
+        </Text>
+        <Switch
+          value={isLP}
+          onValueChange={()=>setIsLP(!isLP)}
+          thumbColor={isLP ? "#14b8a6" : "#f4f3f4"}
+          trackColor={{ false: "#767577", true: "#0f766e" }}
+        />
+      </Pressable>
+      <View className="flex justify-center items-center rounded-lg w-[85vw] mx-auto">
         <View className="mx-auto w-full flex-1 flex-row mb-5 justify-between">
           {[2, 3, 4].map((count) => (
             <Pressable
@@ -124,8 +145,12 @@ const GameFormScreen: React.FC = () => {
             value={name}
             onChangeText={(text) => handlePlayerNameChange(index, text)}
             placeholder={`Player ${index + 1}`}
-            className="mb-2 p-2.5 rounded-lg border border-gray-300 w-full placeholder:text-slate-500"
-            style={{ backgroundColor: "white", fontFamily: "Inter_500Medium" }}
+            className="mb-2 p-2.5 rounded-lg border border-slate-400 w-full placeholder:text-slate-500"
+            style={{
+              backgroundColor: "#1e293b",
+              color: "white",
+              fontFamily: "Inter_500Medium",
+            }}
             returnKeyType={index === playerCount - 1 ? "done" : "next"}
             onSubmitEditing={() => handleSubmitEditing(index)}
           />

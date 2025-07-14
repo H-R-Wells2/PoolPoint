@@ -19,6 +19,7 @@ export type GameState = {
   totalTableAmount: number;
   gameTimerSeconds: number;
   gameTimerInterval: number | null;
+  isLP: boolean;
 
   // Dashboard Data
   todaySummary: {
@@ -45,6 +46,8 @@ export type GameState = {
   setTeam2Scores: (scores: number[]) => void;
   setPlayerNames: (names: string[]) => void;
   setPlayerScores: (scores: { [key: string]: number }) => void;
+  setIsLP: (value: boolean) => void; // ✅ optional direct setter
+  toggleLP: () => void; // ✅ added toggle method
 
   setTodaySummary: (summary: GameState["todaySummary"]) => void;
   setLastGame: (game: GameState["lastGame"]) => void;
@@ -84,6 +87,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   playerScores: {},
   gameTimerSeconds: 0,
   gameTimerInterval: null,
+  isLP: false,
 
   // Dashboard state
   todaySummary: null,
@@ -99,6 +103,8 @@ export const useGameStore = create<GameState>((set, get) => ({
   setTeam2Scores: (scores) => set({ team2Scores: scores }),
   setPlayerNames: (names) => set({ playerNames: names }),
   setPlayerScores: (scores) => set({ playerScores: scores }),
+  setIsLP: (value) => set({ isLP: value }), // ✅ direct setter
+  toggleLP: () => set((state) => ({ isLP: !state.isLP })), // ✅ toggle function
 
   setTodaySummary: (summary) => set({ todaySummary: summary }),
   setLastGame: (game) => set({ lastGame: game }),
@@ -137,10 +143,8 @@ export const useGameStore = create<GameState>((set, get) => ({
     set({
       teamGameStarted: true,
       team1Name: "Team 1",
-      team1Players: ["Shubham", "Parshya"],
       team1Scores: [0, 0],
       team2Name: "Team 2",
-      team2Players: ["Ravi", "Rupesh"],
       team2Scores: [0, 0],
       teamTimerSeconds: 0,
       teamTimerInterval: interval as unknown as number,
