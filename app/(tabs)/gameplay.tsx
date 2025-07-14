@@ -28,33 +28,53 @@ const GamePlay: React.FC = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const calculateAmounts = (count: number): number[] => {
+    let basePercents: number[];
+
     if (count === 2) {
       const scores = Object.values(playerScores);
-      const score1 = scores[0] ?? 0;
-      const score2 = scores[1] ?? 0;
+      const [score1, score2] = [scores[0] ?? 0, scores[1] ?? 0];
 
-      if (isLP && score1 === score2) {
-        return [50, 50];
-      }
-
-      if (isLP) {
-        return [0, 100];
-      }
-
+      if (isLP && score1 === score2) return [50, 50];
+      if (isLP) return [0, 100];
       return [50, 50];
     }
 
     switch (count) {
       case 3:
-        return [25, 32, 43];
+        basePercents = [25, 32, 43];
+        break;
       case 4:
-        return [10, 20, 30, 40];
-      default:
+        basePercents = [10, 20, 30, 40];
+        break;
+      default: {
         const base = 100 / count;
-        return Array.from({ length: count }, (_, i) =>
+        basePercents = Array.from({ length: count }, (_, i) =>
           Math.round(base * (count - i))
         );
+        break;
+      }
     }
+
+    const scoreMap = new Map<number, number[]>();
+    const sorted = Object.entries(playerScores).sort((a, b) => b[1] - a[1]);
+    sorted.forEach(([_, score], index) => {
+      if (!scoreMap.has(score)) scoreMap.set(score, []);
+      scoreMap.get(score)?.push(index);
+    });
+
+    const adjustedPercents: number[] = new Array(count).fill(0);
+
+    scoreMap.forEach((indexes) => {
+      const sum = indexes.reduce((acc, i) => acc + basePercents[i], 0);
+      const avg = Math.floor(sum / indexes.length);
+      const remainder = sum - avg * indexes.length;
+
+      indexes.forEach((i, idx) => {
+        adjustedPercents[i] = avg + (idx === 0 ? remainder : 0);
+      });
+    });
+
+    return adjustedPercents;
   };
 
   type PlayerScoreMap = Record<string, number>;

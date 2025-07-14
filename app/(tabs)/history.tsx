@@ -40,7 +40,9 @@ const HistoryScreen: React.FC = () => {
 
   const fetchUniqueDates = async () => {
     try {
-      const resp = await fetch("https://poolpoint-backend.vercel.app/api/unique-dates");
+      const resp = await fetch(
+        "https://poolpoint-backend.vercel.app/api/unique-dates"
+      );
       const json = await resp.json();
       setUniqueDates(json.data || []);
     } catch (e) {
@@ -73,7 +75,9 @@ const HistoryScreen: React.FC = () => {
         if (reset) return fetchedResults;
 
         const existingIds = new Set(prev.map((item) => item._id));
-        const newUnique = fetchedResults.filter((item) => !existingIds.has(item._id));
+        const newUnique = fetchedResults.filter(
+          (item) => !existingIds.has(item._id)
+        );
         return [...prev, ...newUnique];
       });
 
@@ -121,6 +125,23 @@ const HistoryScreen: React.FC = () => {
     }
   }, [selectedDate]);
 
+  const calculatePlayerPoints = (data: Result[]): PlayerRank[] => {
+    const playerTotals: PlayerRank = {};
+
+    data.forEach((doc) => {
+      doc.players.forEach((player) => {
+        if (!playerTotals[player.playerName]) {
+          playerTotals[player.playerName] = 0;
+        }
+        playerTotals[player.playerName] += player.score;
+      });
+    });
+
+    return Object.keys(playerTotals).map((name) => ({
+      [name]: playerTotals[name],
+    }));
+  };
+
   const calculatePlayerRanks = (data: Result[]): PlayerRank[] => {
     const playerRanks: PlayerRank = {};
 
@@ -159,6 +180,7 @@ const HistoryScreen: React.FC = () => {
 
   const playerRanks = calculatePlayerRanks(results);
   const playerAmounts = calculatePlayerAmounts(results);
+  const playerPoints = calculatePlayerPoints(results);
   const hasAmount = results[0]?.players[0]?.amount !== undefined;
 
   const handleLoadMore = useCallback(() => {
@@ -194,27 +216,85 @@ const HistoryScreen: React.FC = () => {
           <>
             {selectedDate && (
               <ScrollView className="w-[90vw] mx-auto py-2">
-                <Text className="text-white text-xl font-bold text-center mb-2">
+                <Text className="text-white text-xl font-bold text-center mb-4">
                   {selectedDate}
                 </Text>
 
-                <View className="bg-slate-800 p-4 rounded-lg border border-teal-400">
-                  <Text className="text-white text-lg font-semibold text-center mb-2">
-                    {hasAmount ? "Player Amount" : "Player Rankings"}
+                <View className="bg-slate-800 rounded-lg border border-teal-400 p-4 shadow-md shadow-black/40">
+                  <Text className="text-white text-lg font-semibold text-center mb-4">
+                    {hasAmount
+                      ? "Player Amount & Total Score"
+                      : "Player Rankings & Total Score"}
                   </Text>
+
+                  {/* Column Headers */}
+                  <View className="flex-row justify-between items-center px-3 py-2 border-b border-slate-600 mb-2">
+                    <Text
+                      className="text-slate-300 flex-1"
+                      style={{ fontFamily: "Inter_600SemiBold" }}
+                    >
+                      Name
+                    </Text>
+                    <View className="flex-row w-[27vw] justify-between">
+                      <Text
+                        className="text-slate-300 font-semibold"
+                        style={{ fontFamily: "Inter_600SemiBold" }}
+                      >
+                        Points
+                      </Text>
+                      <Text
+                        className="text-slate-300 font-semibold"
+                        style={{ fontFamily: "Inter_600SemiBold" }}
+                      >
+                        {hasAmount ? "Amount" : "Score"}
+                      </Text>
+                    </View>
+                  </View>
 
                   {(hasAmount ? playerAmounts : playerRanks)
                     .sort((a, b) => a[Object.keys(a)[0]] - b[Object.keys(b)[0]])
-                    .map((entry) =>
-                      Object.entries(entry).map(([name, value]) => (
-                        <View
-                          key={name}
-                          className="flex-row justify-between px-2 py-1 border-b border-gray-600"
-                        >
-                          <Text className="text-white">{name}</Text>
-                          <Text className="text-white">{hasAmount ? value : value * 10}</Text>
-                        </View>
-                      ))
+                    .map((entry, idx) =>
+                      Object.entries(entry).map(([name, value]) => {
+                        const totalPointsEntry = playerPoints.find(
+                          (p) => Object.keys(p)[0] === name
+                        );
+                        const totalPoints = totalPointsEntry
+                          ? totalPointsEntry[name]
+                          : 0;
+
+                        return (
+                          <View
+                            key={name}
+                            className={`flex-row justify-between items-center px-3 py-2 rounded-md mb-2 ${
+                              idx % 2 === 0
+                                ? "bg-slate-700/70"
+                                : "bg-slate-700/50"
+                            }`}
+                          >
+                            <Text
+                              className="text-white flex-1"
+                              style={{ fontFamily: "Inter_500Medium" }}
+                            >
+                              {idx + 1}. {name}
+                            </Text>
+
+                            <View className="flex-row items-center w-[27vw] justify-between">
+                              <Text
+                                className="text-white font-semibold"
+                                style={{ fontFamily: "Inter_600SemiBold" }}
+                              >
+                                {totalPoints} pts
+                              </Text>
+                              <Text
+                                className="text-yellow-400 font-semibold"
+                                style={{ fontFamily: "Inter_600SemiBold" }}
+                              >
+                                {hasAmount ? `₹${value}` : value * 10}
+                              </Text>
+                            </View>
+                          </View>
+                        );
+                      })
                     )}
                 </View>
               </ScrollView>
