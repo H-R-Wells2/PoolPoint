@@ -5,7 +5,9 @@ import React, { useRef, useState } from "react";
 import {
   Alert,
   Keyboard,
+  Pressable,
   ScrollView,
+  Switch,
   Text,
   TextInput,
   TouchableOpacity,
@@ -28,6 +30,8 @@ const TeamFormScreen: React.FC = () => {
     setTeam2Players,
     startTeamGame,
     teamGameStarted,
+    isTeamLP,
+    setIsTeamLP,
   } = useGameStore();
 
   const nextInputRef = useRef<(TextInput | null)[][]>([
@@ -141,8 +145,30 @@ const TeamFormScreen: React.FC = () => {
   };
 
   return (
-    <ScrollView>
-      <View className="flex justify-center items-center rounded-lg w-[85vw] mx-auto mt-4">
+    <ScrollView className="w-[85vw] mx-auto">
+      <Pressable
+        onPress={() => {
+          setIsTeamLP(!isTeamLP);
+        }}
+        className="flex-row items-center justify-start gap-1 mt-4 mb-1 w-1/2"
+      >
+        <Text
+          style={{
+            color: "white",
+            fontFamily: "Poppins_600SemiBold",
+            fontSize: 16,
+          }}
+        >
+          Loser-Pays
+        </Text>
+        <Switch
+          value={isTeamLP}
+          onValueChange={() => setIsTeamLP(!isTeamLP)}
+          thumbColor={isTeamLP ? "#14b8a6" : "#f4f3f4"}
+          trackColor={{ false: "#767577", true: "#0f766e" }}
+        />
+      </Pressable>
+      <View className="flex justify-center items-center">
         {[0, 1].map((teamIdx) => (
           <View
             key={teamIdx}

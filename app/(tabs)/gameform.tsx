@@ -15,7 +15,7 @@ import {
 
 const GameFormScreen: React.FC = () => {
   const [playerCount, setPlayerCount] = useState(2);
-  const [playerNames, setPlayerNames] = useState<string[]>(["", "", "", ""]);
+  const [playerNames, setPlayerNames] = useState<string[]>(Array(4).fill(""));
 
   const {
     setPlayerNames: setStoreNames,
@@ -29,7 +29,11 @@ const GameFormScreen: React.FC = () => {
 
   const handlePlayerCountChange = (count: number) => {
     setPlayerCount(count);
-    setPlayerNames(Array(count).fill(""));
+    setPlayerNames((prev) => {
+      const updated = [...prev];
+      while (updated.length < count) updated.push("");
+      return updated.slice(0, count);
+    });
   };
 
   const handlePlayerNameChange = (index: number, value: string) => {
@@ -102,7 +106,7 @@ const GameFormScreen: React.FC = () => {
       >
         <Text
           style={{
-            color: playerCount === 2 ? "white" : "#9ca3af",
+            color: "white",
             fontFamily: "Poppins_600SemiBold",
             fontSize: 16,
           }}
@@ -112,15 +116,8 @@ const GameFormScreen: React.FC = () => {
         <Switch
           value={isLP}
           onValueChange={() => setIsLP(!isLP)}
-          disabled={playerCount !== 2}
-          thumbColor={
-            playerCount === 2 ? (isLP ? "#14b8a6" : "#f4f3f4") : "#9ca3af"
-          }
-          trackColor={
-            playerCount === 2
-              ? { false: "#767577", true: "#0f766e" }
-              : { false: "#9ca3af", true: "#9ca3af" }
-          }
+          thumbColor={isLP ? "#14b8a6" : "#f4f3f4"}
+          trackColor={{ false: "#767577", true: "#0f766e" }}
         />
       </Pressable>
 

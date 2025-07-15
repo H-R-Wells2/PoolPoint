@@ -126,7 +126,8 @@ const HistoryScreen: React.FC = () => {
     if (selectedDate) {
       fetchDateResults();
     } else {
-      fetchHistory(true);
+      // fetchHistory(true);
+      // console.log("fetch history")
     }
   }, [selectedDate]);
 

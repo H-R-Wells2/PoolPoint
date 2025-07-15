@@ -20,6 +20,7 @@ export type GameState = {
   gameTimerSeconds: number;
   gameTimerInterval: number | null;
   isLP: boolean;
+  isTeamLP: boolean;
 
   // Dashboard Data
   todaySummary: {
@@ -47,6 +48,7 @@ export type GameState = {
   setPlayerNames: (names: string[]) => void;
   setPlayerScores: (scores: { [key: string]: number }) => void;
   setIsLP: (value: boolean) => void;
+  setIsTeamLP: (value: boolean) => void;
   toggleLP: () => void;
 
   setTodaySummary: (summary: GameState["todaySummary"]) => void;
@@ -88,6 +90,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   gameTimerSeconds: 0,
   gameTimerInterval: null,
   isLP: false,
+  isTeamLP: false,
 
   // Dashboard state
   todaySummary: null,
@@ -104,6 +107,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   setPlayerNames: (names) => set({ playerNames: names }),
   setPlayerScores: (scores) => set({ playerScores: scores }),
   setIsLP: (value) => set({ isLP: value }),
+  setIsTeamLP: (value) => set({ isTeamLP: value }),
   toggleLP: () => set((state) => ({ isLP: !state.isLP })),
 
   setTodaySummary: (summary) => set({ todaySummary: summary }),

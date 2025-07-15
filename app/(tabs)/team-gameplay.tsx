@@ -26,6 +26,8 @@ const TeamGamePlay = () => {
     setTeam2Scores,
     setTeam2Players,
 
+    isTeamLP,
+
     totalTableAmount,
 
     teamGameStarted,
@@ -58,21 +60,28 @@ const TeamGamePlay = () => {
       let team1AmountPerPlayer: number;
       let team2AmountPerPlayer: number;
 
-      if (totalTableAmount === 120) {
+      if (draw) {
+        const drawAmount =
+          totalTableAmount / (team1PlayerCount + team2PlayerCount);
+        team1AmountPerPlayer = drawAmount;
+        team2AmountPerPlayer = drawAmount;
+      } else if (isTeamLP) {
+        team1AmountPerPlayer = team1IsWinner
+          ? 0
+          : totalTableAmount / team1PlayerCount;
+        team2AmountPerPlayer = team2IsWinner
+          ? 0
+          : totalTableAmount / team2PlayerCount;
+      } else if (totalTableAmount === 120) {
         const winnerAmount = 40;
         const loserAmount = 20;
 
         if (team1IsWinner) {
           team1AmountPerPlayer = winnerAmount;
           team2AmountPerPlayer = loserAmount;
-        } else if (team2IsWinner) {
+        } else {
           team1AmountPerPlayer = loserAmount;
           team2AmountPerPlayer = winnerAmount;
-        } else {
-          const drawAmount =
-            totalTableAmount / (team1PlayerCount + team2PlayerCount);
-          team1AmountPerPlayer = drawAmount;
-          team2AmountPerPlayer = drawAmount;
         }
       } else {
         team1AmountPerPlayer = team1IsWinner
@@ -103,6 +112,7 @@ const TeamGamePlay = () => {
         })),
       ];
 
+      // Distribute remainder for precision loss (except in draw)
       if (!draw) {
         const totalAssigned = rawPlayers.reduce((sum, p) => sum + p.amount, 0);
         const remainder = totalTableAmount - totalAssigned;
