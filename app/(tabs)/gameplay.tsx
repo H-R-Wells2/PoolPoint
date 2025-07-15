@@ -30,37 +30,34 @@ const GamePlay: React.FC = () => {
   const calculateAmounts = (count: number): number[] => {
     let basePercents: number[];
 
-    const scores = Object.values(playerScores);
-    const sortedEntries = Object.entries(playerScores).sort(
-      (a, b) => b[1] - a[1]
-    );
+    if (count === 2) {
+      const scores = Object.values(playerScores);
+      const [score1, score2] = [scores[0] ?? 0, scores[1] ?? 0];
 
-    // Handle isLP mode
-    if (isLP) {
-      if (count === 2) {
-        const [score1, score2] = [scores[0] ?? 0, scores[1] ?? 0];
-        if (score1 === score2) return [50, 50]; // Draw in 2-player LP
-        return score1 < score2 ? [100, 0] : [0, 100]; // Loser pays all
-      } else {
-        const percentages = new Array(count).fill(0);
-        const lowestScore = sortedEntries[sortedEntries.length - 1][1];
-
-        const lowestIndexes = sortedEntries
-          .map(([_, score], idx) => (score === lowestScore ? idx : -1))
-          .filter((i) => i !== -1);
-
-        const share = Math.floor(100 / lowestIndexes.length);
-        let remaining = 100 - share * lowestIndexes.length;
-
-        lowestIndexes.forEach((idx, i) => {
-          percentages[idx] = share + (i === 0 ? remaining : 0);
-        });
-
-        return percentages;
-      }
+      if (isLP && score1 === score2) return [50, 50];
+      if (isLP) return [0, 100];
+      return [50, 50];
     }
 
-    // Normal mode (non-LP)
+    if (isLP && (count === 3 || count === 4)) {
+      const sorted = Object.entries(playerScores).sort((a, b) => b[1] - a[1]);
+      const lowestScore = sorted[sorted.length - 1][1];
+
+      const percentages = new Array(count).fill(0);
+      const lowestIndexes = sorted
+        .map(([_, score], i) => (score === lowestScore ? i : -1))
+        .filter((i) => i !== -1);
+
+      const share = Math.floor(100 / lowestIndexes.length);
+      let remainder = 100 - share * lowestIndexes.length;
+
+      lowestIndexes.forEach((idx, i) => {
+        percentages[idx] = share + (i === 0 ? remainder : 0);
+      });
+
+      return percentages;
+    }
+
     switch (count) {
       case 3:
         basePercents = [25, 32, 43];
@@ -77,9 +74,9 @@ const GamePlay: React.FC = () => {
       }
     }
 
-    // Handle ties in normal mode
     const scoreMap = new Map<number, number[]>();
-    sortedEntries.forEach(([_, score], index) => {
+    const sorted = Object.entries(playerScores).sort((a, b) => b[1] - a[1]);
+    sorted.forEach(([_, score], index) => {
       if (!scoreMap.has(score)) scoreMap.set(score, []);
       scoreMap.get(score)?.push(index);
     });

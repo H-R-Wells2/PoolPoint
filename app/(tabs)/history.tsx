@@ -285,16 +285,12 @@ const HistoryScreen: React.FC = () => {
                             </Text>
 
                             <View className="flex-row items-center w-[27vw] justify-between">
-                              <Text
-                                className="text-white font-semibold"
-                                style={{ fontFamily: "Inter_600SemiBold" }}
-                              >
-                                {totalPoints} pts
+                              <Text className="text-white font-semibold">
+                                {totalPoints}{" "}
+                                <Text className="text-sm font-normal">pts</Text>
                               </Text>
-                              <Text
-                                className="text-yellow-400 font-semibold"
-                                style={{ fontFamily: "Inter_600SemiBold" }}
-                              >
+
+                              <Text className="text-yellow-400 font-semibold">
                                 {hasAmount ? `₹${value}` : value * 10}
                               </Text>
                             </View>
@@ -302,6 +298,28 @@ const HistoryScreen: React.FC = () => {
                         );
                       })
                     )}
+                  {/* Total team score */}
+                  <View className="mt-3 border-t border-slate-400 pt-2 flex-row justify-between items-center">
+                    <Text
+                      className="text-right text-base text-teal-400 font-semibold ml-2"
+                    >
+                      Total Amount:
+                    </Text>
+                    <View>
+                      <Text className="text-right text-base text-teal-400 font-semibold mr-2">
+                        ₹
+                        {results.reduce(
+                          (acc, result) =>
+                            acc +
+                            result.players.reduce(
+                              (sum, player) => sum + (player.amount || 0),
+                              0
+                            ),
+                          0
+                        )}
+                      </Text>
+                    </View>
+                  </View>
                 </View>
               </ScrollView>
             )}

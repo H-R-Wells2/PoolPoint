@@ -182,16 +182,10 @@ const ResultCard: React.FC<ResultCardProps> = ({ result, onDeleteSuccess }) => {
                             >
                               {idx + 1}. {player.playerName}
                             </Text>
-                            <Text
-                              className="text-yellow-400 mx-2"
-                              style={{ fontFamily: "Inter_500Medium" }}
-                            >
+                            <Text className="text-yellow-400 mx-2 font-semibold">
                               ₹{player.amount ?? "-"}
                             </Text>
-                            <Text
-                              className="text-white font-bold"
-                              style={{ fontFamily: "Inter_600SemiBold" }}
-                            >
+                            <Text className="text-white font-semibold">
                               {player.score}
                             </Text>
                           </View>
@@ -286,18 +280,14 @@ const ResultCard: React.FC<ResultCardProps> = ({ result, onDeleteSuccess }) => {
                       </Text>
                     </View>
 
-                    <Text
-                      className="text-yellow-400 font-semibold"
-                      style={{ fontFamily: "Inter_600SemiBold" }}
-                    >
-                      ₹{player.amount ?? "-"}
-                    </Text>
-                    <Text
-                      className="text-white font-bold ml-4"
-                      style={{ fontFamily: "Inter_600SemiBold" }}
-                    >
-                      {player.score}
-                    </Text>
+                    <View className="flex-row items-center min-w-[20%] justify-between">
+                      <Text className="text-yellow-400 font-semibold">
+                        ₹{player.amount ?? "-"}
+                      </Text>
+                      <Text className="text-white font-semibold">
+                        {player.score}
+                      </Text>
+                    </View>
                   </View>
                 );
               });
