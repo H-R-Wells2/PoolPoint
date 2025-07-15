@@ -178,7 +178,7 @@ const GamePlay: React.FC = () => {
 
             <TouchableOpacity
               onPress={() => setShowConfirmModal(true)}
-              className="bg-teal-500 p-3 rounded-lg w-full max-w-[90vw] flex items-center justify-center"
+              className="bg-teal-500 p-2.5 rounded-lg w-full max-w-[90vw] flex items-center justify-center"
             >
               <Text
                 className="text-white text-lg text-center font-semibold"
@@ -205,7 +205,7 @@ const GamePlay: React.FC = () => {
 
             <View className="flex-row justify-between mt-4">
               <TouchableOpacity
-                className="px-4 py-2 bg-gray-300 rounded-md flex-1 mr-2"
+                className="px-4 py-2.5 bg-gray-300 rounded-md flex-1 mr-2"
                 onPress={() => setShowConfirmModal(false)}
               >
                 <Text className="text-center text-gray-800 font-medium">
@@ -214,13 +214,13 @@ const GamePlay: React.FC = () => {
               </TouchableOpacity>
 
               <TouchableOpacity
-                className="px-4 py-2 bg-teal-500 rounded-md flex-1 ml-2"
+                className="px-4 py-2.5 bg-teal-500 rounded-md flex-1 ml-2"
                 disabled={submitting}
                 onPress={submitResult}
                 style={{ opacity: submitting ? 0.6 : 1 }}
               >
                 {submitting ? (
-                  <ActivityIndicator color="#fff" className="py-0.5" />
+                  <ActivityIndicator color="#fff" />
                 ) : (
                   <Text className="text-center text-white font-medium">
                     Confirm

@@ -278,7 +278,7 @@ const HistoryScreen: React.FC = () => {
                             }`}
                           >
                             <Text
-                              className="text-white flex-1"
+                              className="text-white flex-1 pr-2"
                               style={{ fontFamily: "Inter_500Medium" }}
                             >
                               {idx + 1}. {name}

@@ -1,6 +1,6 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import React, { useRef, useState } from "react";
-import { Alert, Text, TouchableWithoutFeedback, View } from "react-native";
+import { Alert, Text, TouchableWithoutFeedback, Vibration, View } from "react-native";
 
 interface Player {
   playerName: string;
@@ -27,6 +27,8 @@ const ResultCard: React.FC<ResultCardProps> = ({ result, onDeleteSuccess }) => {
 
   const handleLongPress = () => {
     setShowDelete(true);
+
+    Vibration.vibrate(100);
 
     if (hideTimeoutRef.current) {
       clearTimeout(hideTimeoutRef.current);
@@ -104,10 +106,10 @@ const ResultCard: React.FC<ResultCardProps> = ({ result, onDeleteSuccess }) => {
   return (
     <TouchableWithoutFeedback
       onLongPress={handleLongPress}
-      delayLongPress={2000}
+      delayLongPress={1000}
     >
       <View className="bg-slate-800 w-[90vw] mx-auto mb-4 p-5 rounded-lg shadow-md shadow-black/50">
-        <View className="mb-4 flex-row justify-between items-center">
+        <View className="mb-4 flex-row justify-between items-center relative">
           <Text className="text-xs text-gray-300">
             {formatDateString(result.date)}
           </Text>
@@ -117,7 +119,7 @@ const ResultCard: React.FC<ResultCardProps> = ({ result, onDeleteSuccess }) => {
               size={25}
               color="#f87171"
               onPress={handleDelete}
-              className="mr-1"
+              className="absolute right-2 -mt-2 p-0.5 rounded-full border-slate-300 border"
             />
           )}
         </View>
@@ -267,7 +269,7 @@ const ResultCard: React.FC<ResultCardProps> = ({ result, onDeleteSuccess }) => {
                   >
                     <View className="flex-1">
                       <Text
-                        className="text-white"
+                        className="text-white mr-2"
                         style={{ fontFamily: "Inter_500Medium" }}
                       >
                         {idx + 1}. {player.playerName}

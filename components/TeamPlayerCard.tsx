@@ -30,7 +30,7 @@ const TeamPlayerCard = ({
   const [editedName, setEditedName] = useState<string>("");
 
   return (
-    <View className="w-[90vw] bg-slate-800 rounded-xl border border-gray-900 overflow-hidden pb-3">
+    <View className="w-full bg-slate-800 rounded-xl border border-gray-900 overflow-hidden pb-3">
       <View className="flex flex-row justify-between items-center w-full px-3 bg-slate-700 py-2">
         <Text
           className="text-white text-2xl font-semibold"
