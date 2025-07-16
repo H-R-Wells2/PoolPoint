@@ -5,15 +5,11 @@ import React, { useState } from "react";
 import {
   ActivityIndicator,
   Alert,
-  Keyboard,
-  KeyboardAvoidingView,
   Modal,
-  Platform,
   ScrollView,
   Text,
   TouchableOpacity,
-  TouchableWithoutFeedback,
-  View,
+  View
 } from "react-native";
 
 const TeamGamePlay = () => {
@@ -154,101 +150,94 @@ const TeamGamePlay = () => {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1 }}
-    >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView>
-          <View className="flex-1 items-center mb-8 mt-4 w-[90vw] mx-auto">
-            {!teamGameStarted ? (
-              <Text className="text-white text-xl mt-20">
-                Start the game from setup tab first.
+    <ScrollView>
+      <View className="flex-1 items-center mb-8 mt-4 w-[90vw] mx-auto">
+        {!teamGameStarted ? (
+          <Text className="text-white text-xl mt-20">
+            Start the game from setup tab first.
+          </Text>
+        ) : (
+          <View className="w-full flex flex-col justify-center items-center gap-6">
+            <TeamPlayerCard
+              name={team1Name}
+              players={team1Players}
+              scores={team1Scores}
+              setScores={setTeam1Scores}
+              onPlayerNameChange={(index: number, newName: string) => {
+                const updated = [...team1Players];
+                updated[index] = newName;
+                setTeam1Players(updated);
+              }}
+            />
+
+            <TeamPlayerCard
+              name={team2Name}
+              players={team2Players}
+              scores={team2Scores}
+              setScores={setTeam2Scores}
+              onPlayerNameChange={(index: number, newName: string) => {
+                const updated = [...team2Players];
+                updated[index] = newName;
+                setTeam2Players(updated);
+              }}
+            />
+
+            <TouchableOpacity
+              onPress={() => setShowConfirmModal(true)}
+              className="bg-teal-500 py-2.5 rounded-lg w-full flex items-center justify-center"
+            >
+              <Text
+                className="text-white text-lg text-center font-semibold"
+                style={{ fontFamily: "Poppins_600SemiBold" }}
+              >
+                Submit Game
               </Text>
-            ) : (
-              <View className="w-full flex flex-col justify-center items-center gap-6">
-                <TeamPlayerCard
-                  name={team1Name}
-                  players={team1Players}
-                  scores={team1Scores}
-                  setScores={setTeam1Scores}
-                  onPlayerNameChange={(index: number, newName: string) => {
-                    const updated = [...team1Players];
-                    updated[index] = newName;
-                    setTeam1Players(updated);
-                  }}
-                />
-
-                <TeamPlayerCard
-                  name={team2Name}
-                  players={team2Players}
-                  scores={team2Scores}
-                  setScores={setTeam2Scores}
-                  onPlayerNameChange={(index: number, newName: string) => {
-                    const updated = [...team2Players];
-                    updated[index] = newName;
-                    setTeam2Players(updated);
-                  }}
-                />
-
-                <TouchableOpacity
-                  onPress={() => setShowConfirmModal(true)}
-                  className="bg-teal-500 py-2.5 rounded-lg w-full flex items-center justify-center"
-                >
-                  <Text
-                    className="text-white text-lg text-center font-semibold"
-                    style={{ fontFamily: "Poppins_600SemiBold" }}
-                  >
-                    Submit Game
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            )}
+            </TouchableOpacity>
           </View>
+        )}
+      </View>
 
-          <Modal
-            visible={showConfirmModal}
-            transparent
-            animationType="none"
-            onRequestClose={() => setShowConfirmModal(false)}
-          >
-            <View className="flex-1 justify-center items-center bg-black/50">
-              <View className="bg-white rounded-lg p-6 w-[90vw] max-w-md shadow-lg">
-                <Text className="text-lg font-semibold mb-4 text-center text-gray-800">
-                  Are you sure you want to submit the result?
+      <Modal
+        visible={showConfirmModal}
+        transparent
+        animationType="none"
+        onRequestClose={() => setShowConfirmModal(false)}
+      >
+        <View className="flex-1 justify-center items-center bg-black/50">
+          <View className="bg-white rounded-lg p-6 w-[90vw] max-w-md shadow-lg">
+            <Text className="text-lg font-semibold mb-4 text-center text-gray-800">
+              Are you sure you want to submit the result?
+            </Text>
+
+            <View className="flex-row justify-between mt-4">
+              <TouchableOpacity
+                className="px-4 py-2.5 bg-gray-300 rounded-md flex-1 mr-2"
+                onPress={() => setShowConfirmModal(false)}
+              >
+                <Text className="text-center text-gray-800 font-medium">
+                  Cancel
                 </Text>
+              </TouchableOpacity>
 
-                <View className="flex-row justify-between mt-4">
-                  <TouchableOpacity
-                    className="px-4 py-2.5 bg-gray-300 rounded-md flex-1 mr-2"
-                    onPress={() => setShowConfirmModal(false)}
-                  >
-                    <Text className="text-center text-gray-800 font-medium">
-                      Cancel
-                    </Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    className="px-4 py-2.5 bg-teal-500 rounded-md flex-1 ml-2"
-                    disabled={submitting}
-                    onPress={handleSubmit}
-                    style={{ opacity: submitting ? 0.6 : 1 }}
-                  >
-                    {submitting ? (
-                      <ActivityIndicator color="#fff" />
-                    ) : (
-                      <Text className="text-center text-white font-medium">
-                        Confirm
-                      </Text>
-                    )}
-                  </TouchableOpacity>
-                </View>
-              </View>
+              <TouchableOpacity
+                className="px-4 py-2.5 bg-teal-500 rounded-md flex-1 ml-2"
+                disabled={submitting}
+                onPress={handleSubmit}
+                style={{ opacity: submitting ? 0.6 : 1 }}
+              >
+                {submitting ? (
+                  <ActivityIndicator color="#fff" />
+                ) : (
+                  <Text className="text-center text-white font-medium">
+                    Confirm
+                  </Text>
+                )}
+              </TouchableOpacity>
             </View>
-          </Modal>
-        </ScrollView>
-      </TouchableWithoutFeedback>
-    </KeyboardAvoidingView>
+          </View>
+        </View>
+      </Modal>
+    </ScrollView>
   );
 };
 
