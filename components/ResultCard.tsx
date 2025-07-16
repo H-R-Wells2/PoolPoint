@@ -1,6 +1,6 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import React, { useRef, useState } from "react";
-import { Alert, Text, TouchableWithoutFeedback, Vibration, View } from "react-native";
+import { Alert, Pressable, Text, View } from "react-native";
 
 interface Player {
   playerName: string;
@@ -28,7 +28,7 @@ const ResultCard: React.FC<ResultCardProps> = ({ result, onDeleteSuccess }) => {
   const handleLongPress = () => {
     setShowDelete(true);
 
-    Vibration.vibrate(100);
+    // Vibration.vibrate(100);
 
     if (hideTimeoutRef.current) {
       clearTimeout(hideTimeoutRef.current);
@@ -104,7 +104,7 @@ const ResultCard: React.FC<ResultCardProps> = ({ result, onDeleteSuccess }) => {
     : null;
 
   return (
-    <TouchableWithoutFeedback
+    <Pressable
       onLongPress={handleLongPress}
       delayLongPress={1000}
     >
@@ -297,7 +297,7 @@ const ResultCard: React.FC<ResultCardProps> = ({ result, onDeleteSuccess }) => {
           </View>
         )}
       </View>
-    </TouchableWithoutFeedback>
+    </Pressable>
   );
 };
 
