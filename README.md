@@ -121,7 +121,7 @@ PoolPoint is designed to offer a clean, intuitive experience for both individual
 * [ ] Player amount customization
 * [ ] Authentication system
 * [x] Fix animation on submit
-* [ ] Ability to delete games
+* [x] Ability to delete games
 * [ ] Ability to select multiple games
 * [ ] Offline storage with AsyncStorage/SQLite
 * [ ] Enhanced game analytics with charts

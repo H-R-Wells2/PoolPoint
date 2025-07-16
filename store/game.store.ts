@@ -1,7 +1,12 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
 
+/* ------------------------------------------------------------------ */
+/* Types */
+/* ------------------------------------------------------------------ */
 export type GameState = {
-  // Team Game
+  /* ---------- Team Game ---------- */
   team1Name: string;
   team1Players: string[];
   team1Scores: number[];
@@ -12,7 +17,7 @@ export type GameState = {
   teamTimerSeconds: number;
   teamTimerInterval: number | null;
 
-  // Normal Game
+  /* ---------- Normal Game ---------- */
   gameStarted: boolean;
   playerNames: string[];
   playerScores: { [key: string]: number };
@@ -22,7 +27,7 @@ export type GameState = {
   isLP: boolean;
   isTeamLP: boolean;
 
-  // Dashboard Data
+  /* ---------- Dashboard Data ---------- */
   todaySummary: {
     gamesPlayed: number;
     totalPaid: number;
@@ -37,7 +42,7 @@ export type GameState = {
     winner: string;
   } | null;
 
-  // Setters
+  /* ---------- Setters ---------- */
   setTotalTableAmount: (amount: number) => void;
   setTeam1Name: (name: string) => void;
   setTeam1Players: (players: string[]) => void;
@@ -54,14 +59,14 @@ export type GameState = {
   setTodaySummary: (summary: GameState["todaySummary"]) => void;
   setLastGame: (game: GameState["lastGame"]) => void;
 
-  // Game control
+  /* ---------- Game control ---------- */
   startGame: () => void;
   resetGame: () => void;
 
   startTeamGame: () => void;
   resetTeamGame: () => void;
 
-  // Timer
+  /* ---------- Timer ---------- */
   startGameTimer: () => void;
   stopGameTimer: () => void;
   resetGameTimer: () => void;
@@ -70,152 +75,175 @@ export type GameState = {
   stopTeamTimer: () => void;
   resetTeamTimer: () => void;
 
-  // History
+  /* ---------- History ---------- */
   selectedDate: string | null;
   setSelectedDate: (date: string | null) => void;
 };
 
-export const useGameStore = create<GameState>((set, get) => ({
-  // Initial game state...
-  team1Name: "Team 1",
-  team1Players: ["Player 1", "Player 2"],
-  team1Scores: [0, 0],
-  team2Name: "Team 2",
-  team2Players: ["Player 1", "Player 2"],
-  team2Scores: [0, 0],
-  teamGameStarted: false,
-  teamTimerSeconds: 0,
-  teamTimerInterval: null,
+/* ------------------------------------------------------------------ */
+/* Store */
+/* ------------------------------------------------------------------ */
+export const useGameStore = create<GameState>()(
+  persist(
+    (set, get) => ({
+      /* ----- Initial game state ----- */
+      team1Name: "Team 1",
+      team1Players: ["Player 1", "Player 2"],
+      team1Scores: [0, 0],
+      team2Name: "Team 2",
+      team2Players: ["Player 1", "Player 2"],
+      team2Scores: [0, 0],
+      teamGameStarted: false,
+      teamTimerSeconds: 0,
+      teamTimerInterval: null,
 
-  gameStarted: false,
-  totalTableAmount: 100,
-  playerNames: [],
-  playerScores: {},
-  gameTimerSeconds: 0,
-  gameTimerInterval: null,
-  isLP: false,
-  isTeamLP: false,
-
-  // Dashboard state
-  todaySummary: null,
-  lastGame: null,
-
-  // History
-  selectedDate: null,
-  setSelectedDate: (date) => set({ selectedDate: date }),
-
-  // Setters
-  setTotalTableAmount: (amount) => set({ totalTableAmount: amount }),
-  setTeam1Name: (name) => set({ team1Name: name }),
-  setTeam1Players: (players) => set({ team1Players: players }),
-  setTeam1Scores: (scores) => set({ team1Scores: scores }),
-  setTeam2Name: (name) => set({ team2Name: name }),
-  setTeam2Players: (players) => set({ team2Players: players }),
-  setTeam2Scores: (scores) => set({ team2Scores: scores }),
-  setPlayerNames: (names) => set({ playerNames: names }),
-  setPlayerScores: (scores) => set({ playerScores: scores }),
-  setIsLP: (value) => set({ isLP: value }),
-  setIsTeamLP: (value) => set({ isTeamLP: value }),
-  toggleLP: () => set((state) => ({ isLP: !state.isLP })),
-
-  setTodaySummary: (summary) => set({ todaySummary: summary }),
-  setLastGame: (game) => set({ lastGame: game }),
-
-  // Game logic
-  startGame: () => {
-    get().resetGameTimer();
-    const interval = setInterval(() => {
-      set((state) => ({ gameTimerSeconds: state.gameTimerSeconds + 1 }));
-    }, 1000);
-    set({
-      gameStarted: true,
-      playerScores: {},
-      gameTimerSeconds: 0,
-      gameTimerInterval: interval as unknown as number,
-    });
-  },
-
-  resetGame: () => {
-    const interval = get().gameTimerInterval;
-    if (interval) clearInterval(interval);
-    set({
       gameStarted: false,
+      totalTableAmount: 100,
       playerNames: [],
       playerScores: {},
       gameTimerSeconds: 0,
       gameTimerInterval: null,
-    });
-  },
+      isLP: false,
+      isTeamLP: false,
 
-  startTeamGame: () => {
-    get().resetTeamTimer();
-    const interval = setInterval(() => {
-      set((state) => ({ teamTimerSeconds: state.teamTimerSeconds + 1 }));
-    }, 1000);
-    set({
-      teamGameStarted: true,
-      team1Name: "Team 1",
-      team1Scores: [0, 0],
-      team2Name: "Team 2",
-      team2Scores: [0, 0],
-      teamTimerSeconds: 0,
-      teamTimerInterval: interval as unknown as number,
-    });
-  },
+      /* ----- Dashboard state ----- */
+      todaySummary: null,
+      lastGame: null,
 
-  resetTeamGame: () => {
-    const interval = get().teamTimerInterval;
-    if (interval) clearInterval(interval);
-    set({
-      teamGameStarted: false,
-      team1Name: "Team 1",
-      team1Players: ["Shubham", "Parshya"],
-      team1Scores: [0, 0],
-      team2Name: "Team 2",
-      team2Players: ["Ravi", "Rupesh"],
-      team2Scores: [0, 0],
-      teamTimerSeconds: 0,
-      teamTimerInterval: null,
-    });
-  },
+      /* ----- History ----- */
+      selectedDate: null,
+      setSelectedDate: (date) => set({ selectedDate: date }),
 
-  startGameTimer: () => {
-    if (get().gameTimerInterval !== null) return;
-    const interval = setInterval(() => {
-      set((state) => ({ gameTimerSeconds: state.gameTimerSeconds + 1 }));
-    }, 1000);
-    set({ gameTimerInterval: interval as unknown as number });
-  },
-  stopGameTimer: () => {
-    const interval = get().gameTimerInterval;
-    if (interval) {
-      clearInterval(interval);
-      set({ gameTimerInterval: null });
+      /* ----- Setters ----- */
+      setTotalTableAmount: (amount) => set({ totalTableAmount: amount }),
+      setTeam1Name: (name) => set({ team1Name: name }),
+      setTeam1Players: (players) => set({ team1Players: players }),
+      setTeam1Scores: (scores) => set({ team1Scores: scores }),
+      setTeam2Name: (name) => set({ team2Name: name }),
+      setTeam2Players: (players) => set({ team2Players: players }),
+      setTeam2Scores: (scores) => set({ team2Scores: scores }),
+      setPlayerNames: (names) => set({ playerNames: names }),
+      setPlayerScores: (scores) => set({ playerScores: scores }),
+      setIsLP: (value) => set({ isLP: value }),
+      setIsTeamLP: (value) => set({ isTeamLP: value }),
+      toggleLP: () => set((state) => ({ isLP: !state.isLP })),
+
+      setTodaySummary: (summary) => set({ todaySummary: summary }),
+      setLastGame: (game) => set({ lastGame: game }),
+
+      /* ----- Game logic ----- */
+      startGame: () => {
+        get().resetGameTimer();
+        const interval = setInterval(() => {
+          set((state) => ({ gameTimerSeconds: state.gameTimerSeconds + 1 }));
+        }, 1000);
+        set({
+          gameStarted: true,
+          playerScores: {},
+          gameTimerSeconds: 0,
+          gameTimerInterval: interval as unknown as number,
+        });
+      },
+
+      resetGame: () => {
+        const interval = get().gameTimerInterval;
+        if (interval) clearInterval(interval);
+        set({
+          gameStarted: false,
+          playerNames: [],
+          playerScores: {},
+          gameTimerSeconds: 0,
+          gameTimerInterval: null,
+        });
+      },
+
+      startTeamGame: () => {
+        get().resetTeamTimer();
+        const interval = setInterval(() => {
+          set((state) => ({ teamTimerSeconds: state.teamTimerSeconds + 1 }));
+        }, 1000);
+        set({
+          teamGameStarted: true,
+          team1Name: "Team 1",
+          team1Scores: [0, 0],
+          team2Name: "Team 2",
+          team2Scores: [0, 0],
+          teamTimerSeconds: 0,
+          teamTimerInterval: interval as unknown as number,
+        });
+      },
+
+      resetTeamGame: () => {
+        const interval = get().teamTimerInterval;
+        if (interval) clearInterval(interval);
+        set({
+          teamGameStarted: false,
+          team1Name: "Team 1",
+          team1Players: ["Shubham", "Parshya"],
+          team1Scores: [0, 0],
+          team2Name: "Team 2",
+          team2Players: ["Ravi", "Rupesh"],
+          team2Scores: [0, 0],
+          teamTimerSeconds: 0,
+          teamTimerInterval: null,
+        });
+      },
+
+      /* ----- Timers ----- */
+      startGameTimer: () => {
+        if (get().gameTimerInterval !== null) return;
+        const interval = setInterval(() => {
+          set((state) => ({ gameTimerSeconds: state.gameTimerSeconds + 1 }));
+        }, 1000);
+        set({ gameTimerInterval: interval as unknown as number });
+      },
+
+      stopGameTimer: () => {
+        const interval = get().gameTimerInterval;
+        if (interval) {
+          clearInterval(interval);
+          set({ gameTimerInterval: null });
+        }
+      },
+
+      resetGameTimer: () => {
+        const interval = get().gameTimerInterval;
+        if (interval) clearInterval(interval);
+        set({ gameTimerSeconds: 0, gameTimerInterval: null });
+      },
+
+      startTeamTimer: () => {
+        if (get().teamTimerInterval !== null) return;
+        const interval = setInterval(() => {
+          set((state) => ({ teamTimerSeconds: state.teamTimerSeconds + 1 }));
+        }, 1000);
+        set({ teamTimerInterval: interval as unknown as number });
+      },
+
+      stopTeamTimer: () => {
+        const interval = get().teamTimerInterval;
+        if (interval) {
+          clearInterval(interval);
+          set({ teamTimerInterval: null });
+        }
+      },
+
+      resetTeamTimer: () => {
+        const interval = get().teamTimerInterval;
+        if (interval) clearInterval(interval);
+        set({ teamTimerSeconds: 0, teamTimerInterval: null });
+      },
+    }),
+    {
+      name: "game-storage", // key in AsyncStorage
+      storage: createJSONStorage(() => AsyncStorage),
+
+      /* Persist Storage */
+      partialize: (state: GameState) => ({
+        totalTableAmount: state.totalTableAmount,
+        isLP: state.isLP,
+        isTeamLP: state.isTeamLP,
+      }),
     }
-  },
-  resetGameTimer: () => {
-    const interval = get().gameTimerInterval;
-    if (interval) clearInterval(interval);
-    set({ gameTimerSeconds: 0, gameTimerInterval: null });
-  },
-
-  startTeamTimer: () => {
-    if (get().teamTimerInterval !== null) return;
-    const interval = setInterval(() => {
-      set((state) => ({ teamTimerSeconds: state.teamTimerSeconds + 1 }));
-    }, 1000);
-    set({ teamTimerInterval: interval as unknown as number });
-  },
-  stopTeamTimer: () => {
-    const interval = get().teamTimerInterval;
-    if (interval) {
-      clearInterval(interval);
-      set({ teamTimerInterval: null });
-    }
-  },
-  resetTeamTimer: () => {
-    const interval = get().teamTimerInterval;
-    if (interval) clearInterval(interval);
-    set({ teamTimerSeconds: 0, teamTimerInterval: null });
-  },
-}));
+  )
+);

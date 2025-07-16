@@ -4,13 +4,16 @@ import React, { useRef, useState } from "react";
 import {
   Alert,
   Keyboard,
+  KeyboardAvoidingView,
+  Platform,
   Pressable,
   ScrollView,
   Switch,
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  TouchableWithoutFeedback,
+  View,
 } from "react-native";
 
 const GameFormScreen: React.FC = () => {
@@ -95,108 +98,115 @@ const GameFormScreen: React.FC = () => {
   };
 
   return (
-    <ScrollView>
-      <View className="w-[85vw] mx-auto">
-        <Pressable
-          onPress={() => {
-            if (playerCount === 2) {
-              setIsLP(!isLP);
-            }
-          }}
-          className="flex-row items-center justify-start gap-1 mt-4 mb-1 w-1/2"
-        >
-          <Text
-            style={{
-              color: "white",
-              fontFamily: "Poppins_600SemiBold",
-              fontSize: 16,
-            }}
-          >
-            Loser-Pays
-          </Text>
-          <Switch
-            value={isLP}
-            onValueChange={() => setIsLP(!isLP)}
-            thumbColor={isLP ? "#14b8a6" : "#f4f3f4"}
-            trackColor={{ false: "#767577", true: "#0f766e" }}
-          />
-        </Pressable>
-
-        <View className="flex justify-center items-center">
-          <View className="mx-auto w-full flex-1 flex-row mb-5 justify-between">
-            {[2, 3, 4].map((count) => (
-              <Pressable
-                key={count}
-                onPress={() => handlePlayerCountChange(count)}
-                className="w-[32%] rounded-lg"
-                style={{
-                  backgroundColor:
-                    playerCount === count ? "#14b8a6" : "#1f2937",
-                  paddingVertical: 10,
-                  paddingHorizontal: 15,
-                }}
-              >
-                <Text
-                  style={{
-                    color: "white",
-                    fontFamily: "Poppins_600SemiBold",
-                    textAlign: "center",
-                  }}
-                >
-                  {count} Players
-                </Text>
-              </Pressable>
-            ))}
-          </View>
-
-          {playerNames.slice(0, playerCount).map((name, index) => (
-            <TextInput
-              key={index}
-              ref={(el) => {
-                inputRefs.current[index] = el;
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <ScrollView>
+          <View className="w-[85vw] mx-auto">
+            <Pressable
+              onPress={() => {
+                if (playerCount === 2) {
+                  setIsLP(!isLP);
+                }
               }}
-              value={name}
-              onChangeText={(text) => handlePlayerNameChange(index, text)}
-              placeholder={`Player ${index + 1}`}
-              className="mb-2 p-2.5 rounded-lg border border-slate-300 w-full placeholder:text-slate-500"
-              style={{
-                backgroundColor: "#1e293b",
-                color: "white",
-                fontFamily: "Inter_500Medium",
-              }}
-              returnKeyType={index === playerCount - 1 ? "done" : "next"}
-              onSubmitEditing={() => handleSubmitEditing(index)}
-            />
-          ))}
-
-          {gameStarted && (
-            <TouchableOpacity
-              onPress={handleResume}
-              className="bg-teal-500 p-2.5 rounded-lg mt-4 w-full"
+              className="flex-row items-center justify-start gap-1 mt-4 mb-1 w-1/2"
             >
               <Text
-                className="text-white text-lg text-center"
-                style={{ fontFamily: "Poppins_600SemiBold" }}
+                style={{
+                  color: "white",
+                  fontFamily: "Poppins_600SemiBold",
+                  fontSize: 16,
+                }}
               >
-                Resume Game
+                Loser-Pays
               </Text>
-            </TouchableOpacity>
-          )}
+              <Switch
+                value={isLP}
+                onValueChange={() => setIsLP(!isLP)}
+                thumbColor={isLP ? "#14b8a6" : "#f4f3f4"}
+                trackColor={{ false: "#767577", true: "#0f766e" }}
+              />
+            </Pressable>
 
-          <TouchableOpacity
-            onPress={handleStartGame}
-            className="bg-teal-500 p-2.5 rounded-lg mt-4 w-full"
-          >
-            <Text
-              className="text-white text-lg text-center"
-              style={{ fontFamily: "Poppins_600SemiBold" }}
-            >
-              Start Game
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </ScrollView>
+            <View className="flex justify-center items-center">
+              <View className="mx-auto w-full flex-1 flex-row mb-5 justify-between">
+                {[2, 3, 4].map((count) => (
+                  <Pressable
+                    key={count}
+                    onPress={() => handlePlayerCountChange(count)}
+                    className="w-[32%] rounded-lg"
+                    style={{
+                      backgroundColor:
+                        playerCount === count ? "#14b8a6" : "#1f2937",
+                      paddingVertical: 10,
+                      paddingHorizontal: 15,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: "white",
+                        fontFamily: "Poppins_600SemiBold",
+                        textAlign: "center",
+                      }}
+                    >
+                      {count} Players
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
+
+              {playerNames.slice(0, playerCount).map((name, index) => (
+                <TextInput
+                  key={index}
+                  ref={(el) => {
+                    inputRefs.current[index] = el;
+                  }}
+                  value={name}
+                  onChangeText={(text) => handlePlayerNameChange(index, text)}
+                  placeholder={`Player ${index + 1}`}
+                  className="mb-2 p-2.5 rounded-lg border border-slate-300 w-full placeholder:text-slate-500"
+                  style={{
+                    backgroundColor: "#1e293b",
+                    color: "white",
+                    fontFamily: "Inter_500Medium",
+                  }}
+                  returnKeyType={index === playerCount - 1 ? "done" : "next"}
+                  onSubmitEditing={() => handleSubmitEditing(index)}
+                />
+              ))}
+
+              {gameStarted && (
+                <TouchableOpacity
+                  onPress={handleResume}
+                  className="bg-teal-500 p-2.5 rounded-lg mt-4 w-full"
+                >
+                  <Text
+                    className="text-white text-lg text-center"
+                    style={{ fontFamily: "Poppins_600SemiBold" }}
+                  >
+                    Resume Game
+                  </Text>
+                </TouchableOpacity>
+              )}
+
+              <TouchableOpacity
+                onPress={handleStartGame}
+                className="bg-teal-500 p-2.5 rounded-lg mt-4 w-full"
+              >
+                <Text
+                  className="text-white text-lg text-center"
+                  style={{ fontFamily: "Poppins_600SemiBold" }}
+                >
+                  Start Game
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </ScrollView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 };
 
