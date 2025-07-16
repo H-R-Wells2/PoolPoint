@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import DateCalendarFilter from "@/components/DateDropdownFilter";
 import ResultCard from "@/components/ResultCard";
+import { useGameStore } from "@/store/game.store";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -33,10 +34,11 @@ const HistoryScreen: React.FC = () => {
   const [results, setResults] = useState<Result[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [uniqueDates, setUniqueDates] = useState<string[]>([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+
+  const {selectedDate, setSelectedDate} = useGameStore();
 
   const fetchUniqueDates = async () => {
     try {
@@ -192,13 +194,21 @@ const HistoryScreen: React.FC = () => {
   const handleLoadMore = useCallback(() => {
     if (!selectedDate && !loadingMore && hasMore) {
       fetchHistory();
+      // console.log("Loading more history results...");
     }
   }, [selectedDate, loadingMore, hasMore]);
 
   if (loading && results.length === 0) {
     return (
-      <View className="flex-1 justify-center items-center">
-        <ActivityIndicator size="large" color="#ffffff" />
+      <View className="flex-1">
+        <DateCalendarFilter
+          uniqueDates={uniqueDates}
+          selected={selectedDate}
+          setSelected={setSelectedDate}
+        />
+        <View className="flex-1 justify-center items-center">
+          <ActivityIndicator size="large" color="#ffffff" />
+        </View>
       </View>
     );
   }
@@ -300,9 +310,7 @@ const HistoryScreen: React.FC = () => {
                     )}
                   {/* Total team score */}
                   <View className="mt-3 border-t border-slate-400 pt-2 flex-row justify-between items-center">
-                    <Text
-                      className="text-right text-base text-teal-400 font-semibold ml-2"
-                    >
+                    <Text className="text-right text-base text-teal-400 font-semibold ml-2">
                       Total Amount:
                     </Text>
                     <View>

@@ -69,6 +69,10 @@ export type GameState = {
   startTeamTimer: () => void;
   stopTeamTimer: () => void;
   resetTeamTimer: () => void;
+
+  // History
+  selectedDate: string | null;
+  setSelectedDate: (date: string | null) => void;
 };
 
 export const useGameStore = create<GameState>((set, get) => ({
@@ -95,6 +99,10 @@ export const useGameStore = create<GameState>((set, get) => ({
   // Dashboard state
   todaySummary: null,
   lastGame: null,
+
+  // History
+  selectedDate: null,
+  setSelectedDate: (date) => set({ selectedDate: date }),
 
   // Setters
   setTotalTableAmount: (amount) => set({ totalTableAmount: amount }),

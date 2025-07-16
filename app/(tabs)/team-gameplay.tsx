@@ -126,7 +126,7 @@ const TeamGamePlay = () => {
         }
       }
 
-      console.log("isTeamLP value in submitResult:", isTeamLP);
+      // console.log("isTeamLP value in submitResult:", isTeamLP);
 
       const response = await fetch(
         "https://poolpoint-backend.vercel.app/api/results",
