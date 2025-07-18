@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, Vibration, View } from "react-native";
 
 interface Props {
   name: string;
@@ -11,6 +11,7 @@ interface Props {
 
 const PlayerCard = ({ name, players, score, setScore }: Props) => {
   const handleScoreChange = (amount: number) => {
+    Vibration.vibrate(50);
     setScore(score + amount);
   };
 

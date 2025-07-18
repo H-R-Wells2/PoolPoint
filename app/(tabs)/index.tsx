@@ -132,7 +132,7 @@ export default function Index() {
             </View>
           </View>
         ) : fetching ? (
-          <View className="flex-1 items-center justify-center mt-4 bg-slate-800 w-[90vw] h-36 rounded-xl">
+          <View className="flex-1 items-center justify-center mt-4 bg-slate-800 w-[90vw] h-[9.5rem] rounded-xl">
             <ActivityIndicator size="large" color="#22d3ee" />
           </View>
         ) : null}
@@ -177,7 +177,7 @@ export default function Index() {
             </TouchableOpacity>
           </View>
         ) : fetching ? (
-          <View className="flex-1 items-center justify-center mt-4 bg-slate-800 w-[90vw] h-36 rounded-xl">
+          <View className="flex-1 items-center justify-center mt-4 bg-slate-800 w-[90vw] h-[9.5rem] rounded-xl">
             <ActivityIndicator size="large" color="#22d3ee" />
           </View>
         ) : null}

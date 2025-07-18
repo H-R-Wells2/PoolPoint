@@ -1,6 +1,6 @@
 import { Feather, Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Text, TextInput, TouchableOpacity, Vibration, View } from "react-native";
 
 interface Props {
   name: string;
@@ -18,6 +18,7 @@ const TeamPlayerCard = ({
   onPlayerNameChange,
 }: Props) => {
   const handleScoreChange = (index: number, amount: number) => {
+    Vibration.vibrate(50);
     const updatedScores = [...scores];
     updatedScores[index] += amount;
     setScores(updatedScores);

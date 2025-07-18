@@ -9,6 +9,9 @@ dist/
 web-build/
 expo-env.d.ts
 
+# VS Code
+.vscode/
+
 # Native
 .kotlin/
 *.orig.*
@@ -37,3 +40,4 @@ yarn-error.*
 *.tsbuildinfo
 
 app-example
+.vscode/settings.json
