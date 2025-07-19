@@ -5,9 +5,6 @@
   },
   "build": {
     "production": {
-      "android": {
-        "buildType": "aab"
-      },
       "developmentClient": false,
       "distribution": "store"
     },
