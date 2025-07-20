@@ -5,8 +5,11 @@
   },
   "build": {
     "production": {
+    "android": {
+        "buildType": "apk"
+      },
       "developmentClient": false,
-      "distribution": "store"
+      "distribution": "internal"
     },
     "local": {
       "android": {
