@@ -4,13 +4,13 @@ import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
   ActivityIndicator,
-  Alert,
   Modal,
   ScrollView,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
+import { showMessage } from "react-native-flash-message";
 
 const GamePlay: React.FC = () => {
   const router = useRouter();
@@ -153,7 +153,13 @@ const GamePlay: React.FC = () => {
       router.replace("/history");
     } catch (error) {
       console.error("Submit error:", error);
-      Alert.alert("Error", "Failed to submit result. Try again.");
+      showMessage({
+        message: "Error",
+        description: "Failed to submit result. Try again.",
+        type: "danger",
+        backgroundColor: "#ef4444",
+        color: "white",
+      });
     } finally {
       setSubmitting(false);
       setShowConfirmModal(false);

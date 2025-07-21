@@ -4,7 +4,6 @@ import { router } from "expo-router";
 import React, { useState } from "react";
 import {
   ActivityIndicator,
-  Alert,
   Keyboard,
   KeyboardAvoidingView,
   Modal,
@@ -15,6 +14,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+import { showMessage } from "react-native-flash-message";
 
 const TeamGamePlay = () => {
   const {
@@ -116,7 +116,6 @@ const TeamGamePlay = () => {
         })),
       ];
 
-      // Distribute remainder for precision loss (except in draw)
       if (!draw) {
         const totalAssigned = rawPlayers.reduce((sum, p) => sum + p.amount, 0);
         const remainder = totalTableAmount - totalAssigned;
@@ -125,8 +124,6 @@ const TeamGamePlay = () => {
           rawPlayers[i % rawPlayers.length].amount += 1;
         }
       }
-
-      // console.log("isTeamLP value in submitResult:", isTeamLP);
 
       const response = await fetch(
         "https://poolpoint-backend.vercel.app/api/results",
@@ -139,14 +136,31 @@ const TeamGamePlay = () => {
 
       if (!response.ok) throw new Error("Failed to submit game");
 
+      setTimeout(() => {
+        showMessage({
+          message: "Success",
+          description: `Game Submitted Successfully!`,
+          type: "success",
+          backgroundColor: "#14b8a6",
+          color: "white",
+        });
+      }, 500);
+
       resetTeamGame();
       router.replace("/(tabs)/history");
     } catch (error) {
       console.error("Error submitting game:", error);
-      Alert.alert(
-        "Error",
-        "There was an issue while submitting the game. Try again!"
-      );
+
+      setTimeout(() => {
+        showMessage({
+          message: "Error",
+          description:
+            "There was an issue while submitting the game. Try again!",
+          type: "danger",
+          backgroundColor: "#ef4444",
+          color: "white",
+        });
+      }, 500);
     } finally {
       setSubmitting(false);
       setShowConfirmModal(false);

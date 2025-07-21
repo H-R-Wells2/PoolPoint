@@ -10,6 +10,7 @@ import {
   Text,
   View,
 } from "react-native";
+import { showMessage } from "react-native-flash-message";
 
 interface Player {
   playerName: string;
@@ -38,7 +39,7 @@ const HistoryScreen: React.FC = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
-  const {selectedDate, setSelectedDate} = useGameStore();
+  const { selectedDate, setSelectedDate } = useGameStore();
 
   const fetchUniqueDates = async () => {
     try {
@@ -344,6 +345,13 @@ const HistoryScreen: React.FC = () => {
             result={item}
             isAdmin={false}
             onDeleteSuccess={() => {
+              showMessage({
+                message: "Success",
+                description: "Result deleted successfully!",
+                type: "danger",
+                backgroundColor: "#14b8a6",
+                color: "white",
+              });
               if (selectedDate) fetchDateResults();
               else fetchHistory(true);
             }}

@@ -1,7 +1,6 @@
 import { useGameStore } from "@/store/game.store";
 import React, { useState } from "react";
 import {
-  Alert,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
@@ -12,6 +11,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+import { showMessage } from "react-native-flash-message";
 
 const Settings: React.FC = () => {
   const { totalTableAmount, setTotalTableAmount } = useGameStore();
@@ -20,13 +20,29 @@ const Settings: React.FC = () => {
   const handleSave = () => {
     const parsed = parseInt(amount, 10);
 
-    if (isNaN(parsed) || parsed <= 0) {
-      Alert.alert("Invalid Input", "Please enter a valid positive number.");
+    if (isNaN(parsed) || parsed <= 0 || parsed < 10 || parsed > 1000) {
+      let errorMessage = "Please enter a valid positive number.";
+      if (parsed > 1000) errorMessage = "Amount cannot exceed ₹1000.";
+      if (parsed < 10) errorMessage = "Amount cannot be less than ₹10.";
+
+      showMessage({
+        message: "Error",
+        description: errorMessage,
+        type: "danger",
+        backgroundColor: "#ef4444",
+        color: "white",
+      });
       return;
     }
 
     setTotalTableAmount(parsed);
-    Alert.alert("Saved", `Total Table Amount updated to ₹${parsed}`);
+    showMessage({
+      message: "Success",
+      description: `Total Table Amount updated to ₹${parsed}`,
+      type: "success",
+      backgroundColor: "#14b8a6",
+      color: "white",
+    });
   };
 
   return (
@@ -57,7 +73,7 @@ const Settings: React.FC = () => {
                 onChangeText={setAmount}
                 keyboardType="numeric"
                 placeholder="Enter amount"
-                className="border border-slate-300 rounded-lg px-4 py-3"
+                className="border border-slate-300 rounded-lg px-4 py-3 placeholder:text-slate-500"
                 style={{
                   backgroundColor: "#1e293b",
                   color: "white",

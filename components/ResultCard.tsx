@@ -1,6 +1,13 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import React, { useRef, useState } from "react";
-import { Alert, Text, TouchableWithoutFeedback, Vibration, View } from "react-native";
+import {
+  Alert,
+  Text,
+  TouchableWithoutFeedback,
+  Vibration,
+  View,
+} from "react-native";
+import { showMessage } from "react-native-flash-message";
 
 interface Player {
   playerName: string;
@@ -58,10 +65,13 @@ const ResultCard: React.FC<ResultCardProps> = ({ result, onDeleteSuccess }) => {
             onDeleteSuccess?.();
           } catch (err) {
             console.error("Delete error:", err);
-            Alert.alert(
-              "Error",
-              "Failed to delete the result. Please try again."
-            );
+            showMessage({
+              message: "Error",
+              description: "Failed to delete the result. Please try again!",
+              type: "danger",
+              backgroundColor: "#ef4444",
+              color: "white",
+            });
           }
         },
       },
@@ -107,7 +117,6 @@ const ResultCard: React.FC<ResultCardProps> = ({ result, onDeleteSuccess }) => {
     <TouchableWithoutFeedback
       onLongPress={handleLongPress}
       delayLongPress={1000}
-
     >
       <View className="bg-slate-800 w-[90vw] mx-auto mb-4 p-5 rounded-lg shadow-md shadow-black/50">
         <View className="mb-4 flex-row justify-between items-center relative">

@@ -3,7 +3,6 @@ import Feather from "@expo/vector-icons/Feather";
 import { router } from "expo-router";
 import React, { useRef, useState } from "react";
 import {
-  Alert,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
@@ -14,8 +13,9 @@ import {
   TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  View,
+  View
 } from "react-native";
+import { showMessage } from "react-native-flash-message";
 
 const TeamFormScreen: React.FC = () => {
   const [localTeamNames, setLocalTeamNames] = useState(["Team 1", "Team 2"]);
@@ -70,7 +70,13 @@ const TeamFormScreen: React.FC = () => {
     );
 
     if (allPlayers.length < 4) {
-      Alert.alert("Error", "Please enter names for all players.");
+      showMessage({
+        message: "Error",
+        description: "Please enter names for all players.",
+        type: "danger",
+        backgroundColor: "#ef4444",
+        color: "white",
+      });
       return;
     }
 
@@ -105,20 +111,35 @@ const TeamFormScreen: React.FC = () => {
       new Set(trimmedPlayers).size !== trimmedPlayers.length;
 
     if (hasEmpty) {
-      Alert.alert("Missing Name", "All player names must be filled in.");
+      showMessage({
+        message: "Missing Name",
+        description: "All player names must be filled in.",
+        type: "danger",
+        backgroundColor: "#ef4444",
+        color: "white",
+      });
       return;
     }
 
     if (hasInvalid) {
-      Alert.alert(
-        "Invalid Input",
-        "Player names must be at least 3 characters long."
-      );
+      showMessage({
+        message: "Invalid Input",
+        description: "Player names must be at least 3 characters long.",
+        type: "danger",
+        backgroundColor: "#ef4444",
+        color: "white",
+      });
       return;
     }
 
     if (hasDuplicates) {
-      Alert.alert("Duplicate Names", "Each player must have a unique name.");
+      showMessage({
+        message: "Duplicate Names",
+        description: "Each player must have a unique name.",
+        type: "danger",
+        backgroundColor: "#ef4444",
+        color: "white",
+      });
       return;
     }
 
