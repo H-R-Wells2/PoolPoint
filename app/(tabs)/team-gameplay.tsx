@@ -77,8 +77,8 @@ const TeamGamePlay = () => {
           ? 0
           : totalTableAmount / team2PlayerCount;
       } else if (totalTableAmount === 120) {
-        const winnerAmount = 40;
-        const loserAmount = 20;
+        const winnerAmount = 20;
+        const loserAmount = 40;
 
         if (team1IsWinner) {
           team1AmountPerPlayer = winnerAmount;
