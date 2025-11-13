@@ -1,6 +1,13 @@
+import { useGameStore } from "@/store/game.store";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
-import { Text, TextInput, TouchableOpacity, Vibration, View } from "react-native";
+import {
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Vibration,
+  View,
+} from "react-native";
 
 interface Props {
   name: string;
@@ -17,11 +24,18 @@ const TeamPlayerCard = ({
   setScores,
   onPlayerNameChange,
 }: Props) => {
+  const { addTeamScoreEvent } = useGameStore();
+
   const handleScoreChange = (index: number, amount: number) => {
     Vibration.vibrate(50);
     const updatedScores = [...scores];
     updatedScores[index] += amount;
     setScores(updatedScores);
+
+    const playerName =
+      players && players[index] ? players[index] : `Player ${index + 1}`;
+
+    addTeamScoreEvent(playerName, name, amount);
   };
 
   const player1name = players && players.length > 0 ? players[0] : "Player 1";
@@ -43,7 +57,7 @@ const TeamPlayerCard = ({
           className="text-white text-2xl w-1/3 text-center border border-teal-500 p-1 bg-slate-800 rounded-lg"
           style={{ fontFamily: "Inter_500Medium" }}
         >
-          {scores[0]+scores[1]}
+          {scores[0] + scores[1]}
         </Text>
       </View>
 

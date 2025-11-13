@@ -42,6 +42,30 @@ export type GameState = {
     winner: string;
   } | null;
 
+  /* ---------- Score History ---------- */
+  scoreHistory: {
+    playerName: string;
+    pointsChanged: number; // positive or negative
+    timestamp: string; // ISO time
+  }[];
+
+  addScoreEvent: (playerName: string, pointsChanged: number) => void;
+  clearScoreHistory: () => void;
+
+  /* ---------- Team Game Score History ---------- */
+  teamScoreHistory: {
+    playerName: string;
+    teamName: string;
+    pointsChanged: number;
+    timestamp: string;
+  }[];
+  addTeamScoreEvent: (
+    playerName: string,
+    teamName: string,
+    pointsChanged: number
+  ) => void;
+  clearTeamScoreHistory: () => void;
+
   /* ---------- Setters ---------- */
   setTotalTableAmount: (amount: number) => void;
   setTeam1Name: (name: string) => void;
@@ -110,6 +134,39 @@ export const useGameStore = create<GameState>()(
       todaySummary: null,
       lastGame: null,
 
+      /* ----- Score History ----- */
+      scoreHistory: [],
+
+      addScoreEvent: (playerName, pointsChanged) =>
+        set((state) => ({
+          scoreHistory: [
+            ...state.scoreHistory,
+            {
+              playerName,
+              pointsChanged,
+              timestamp: new Date().toISOString(),
+            },
+          ],
+        })),
+
+      clearScoreHistory: () => set({ scoreHistory: [] }),
+
+      /* ---------- Team Score History ---------- */
+      teamScoreHistory: [],
+      addTeamScoreEvent: (playerName, teamName, pointsChanged) =>
+        set((state) => ({
+          teamScoreHistory: [
+            ...state.teamScoreHistory,
+            {
+              playerName,
+              teamName,
+              pointsChanged,
+              timestamp: new Date().toISOString(),
+            },
+          ],
+        })),
+      clearTeamScoreHistory: () => set({ teamScoreHistory: [] }),
+
       /* ----- History ----- */
       selectedDate: null,
       setSelectedDate: (date) => set({ selectedDate: date }),
@@ -155,6 +212,7 @@ export const useGameStore = create<GameState>()(
           gameTimerSeconds: 0,
           gameTimerInterval: null,
         });
+        set({ scoreHistory: [] });
       },
 
       startTeamGame: () => {
@@ -187,6 +245,7 @@ export const useGameStore = create<GameState>()(
           teamTimerSeconds: 0,
           teamTimerInterval: null,
         });
+        set({ teamScoreHistory: [] });
       },
 
       /* ----- Timers ----- */

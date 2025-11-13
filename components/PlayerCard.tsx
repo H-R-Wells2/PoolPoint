@@ -1,3 +1,4 @@
+import { useGameStore } from "@/store/game.store";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { Text, TouchableOpacity, Vibration, View } from "react-native";
@@ -10,9 +11,12 @@ interface Props {
 }
 
 const PlayerCard = ({ name, players, score, setScore }: Props) => {
+  const { addScoreEvent } = useGameStore();
+
   const handleScoreChange = (amount: number) => {
     Vibration.vibrate(50);
     setScore(score + amount);
+     addScoreEvent(name, amount);
   };
 
   return (

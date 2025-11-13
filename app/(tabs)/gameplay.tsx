@@ -1,16 +1,22 @@
+import ActivitySheet from "@/components/ActivitySheet";
+import ConfirmSubmitModal from "@/components/ConfirmSubmitModal";
+import FloatingButton from "@/components/FloatingButton";
 import PlayerCard from "@/components/PlayerCard";
 import { useGameStore } from "@/store/game.store";
-import { useRouter } from "expo-router";
-import React, { useState } from "react";
 import {
-  ActivityIndicator,
-  Modal,
+  BottomSheetModal,
+  BottomSheetModalProvider,
+} from "@gorhom/bottom-sheet";
+import { useRouter } from "expo-router";
+import React, { useCallback, useRef, useState } from "react";
+import {
   ScrollView,
   Text,
   TouchableOpacity,
   View
 } from "react-native";
 import { showMessage } from "react-native-flash-message";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const GamePlay: React.FC = () => {
   const router = useRouter();
@@ -26,6 +32,12 @@ const GamePlay: React.FC = () => {
 
   const [submitting, setSubmitting] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+
+  const bottomSheetRef = useRef<BottomSheetModal>(null);
+
+  const openSheet = useCallback(() => {
+    bottomSheetRef.current?.present();
+  }, []);
 
   const calculateAmounts = (count: number): number[] => {
     let basePercents: number[];
@@ -168,75 +180,48 @@ const GamePlay: React.FC = () => {
 
   return (
     <>
-      <ScrollView>
-        <View className="flex-1 items-center mb-8 mt-4">
-          <View className="w-full flex flex-col justify-center items-center px-4 gap-4">
-            {playerNames.map((name, index) => (
-              <PlayerCard
-                key={index}
-                name={name}
-                score={playerScores[name] ?? 0}
-                setScore={(newScore) =>
-                  setPlayerScores({ ...playerScores, [name]: newScore })
-                }
-              />
-            ))}
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <BottomSheetModalProvider>
+          <ScrollView>
+            <View className="flex-1 items-center mb-8 mt-4">
+              <View className="w-full flex flex-col justify-center items-center px-4 gap-4">
+                {playerNames.map((name, index) => (
+                  <PlayerCard
+                    key={index}
+                    name={name}
+                    score={playerScores[name] ?? 0}
+                    setScore={(newScore) =>
+                      setPlayerScores({ ...playerScores, [name]: newScore })
+                    }
+                  />
+                ))}
 
-            <TouchableOpacity
-              onPress={() => setShowConfirmModal(true)}
-              className="bg-teal-500 p-2.5 rounded-lg w-full max-w-[90vw] flex items-center justify-center"
-            >
-              <Text
-                className="text-white text-lg text-center font-semibold"
-                style={{ fontFamily: "Poppins_600SemiBold" }}
-              >
-                Submit Result
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </ScrollView>
-
-      <Modal
-        visible={showConfirmModal}
-        transparent
-        animationType="none"
-        onRequestClose={() => setShowConfirmModal(false)}
-      >
-        <View className="flex-1 justify-center items-center bg-black/50">
-          <View className="bg-white rounded-lg p-6 w-[90vw] max-w-md shadow-lg">
-            <Text className="text-lg font-semibold mb-4 text-center text-gray-800">
-              Are you sure you want to submit the result?
-            </Text>
-
-            <View className="flex-row justify-between mt-4">
-              <TouchableOpacity
-                className="px-4 py-2.5 bg-gray-300 rounded-md flex-1 mr-2"
-                onPress={() => setShowConfirmModal(false)}
-              >
-                <Text className="text-center text-gray-800 font-medium">
-                  Cancel
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                className="px-4 py-2.5 bg-teal-500 rounded-md flex-1 ml-2"
-                disabled={submitting}
-                onPress={submitResult}
-                style={{ opacity: submitting ? 0.6 : 1 }}
-              >
-                {submitting ? (
-                  <ActivityIndicator color="#fff" />
-                ) : (
-                  <Text className="text-center text-white font-medium">
-                    Confirm
+                <TouchableOpacity
+                  onPress={() => setShowConfirmModal(true)}
+                  className="bg-teal-500 p-2.5 rounded-lg w-full max-w-[90vw] flex items-center justify-center"
+                >
+                  <Text
+                    className="text-white text-lg text-center font-semibold"
+                    style={{ fontFamily: "Poppins_600SemiBold" }}
+                  >
+                    Submit Result
                   </Text>
-                )}
-              </TouchableOpacity>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-        </View>
-      </Modal>
+          </ScrollView>
+
+          <FloatingButton onPress={openSheet} />
+          <ActivitySheet ref={bottomSheetRef} />
+
+          <ConfirmSubmitModal
+            visible={showConfirmModal}
+            submitting={submitting}
+            onCancel={() => setShowConfirmModal(false)}
+            onConfirm={submitResult}
+          />
+        </BottomSheetModalProvider>
+      </GestureHandlerRootView>
     </>
   );
 };
