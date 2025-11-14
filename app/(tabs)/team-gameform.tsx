@@ -13,19 +13,11 @@ import {
   TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  View
+  View,
 } from "react-native";
 import { showMessage } from "react-native-flash-message";
 
 const TeamFormScreen: React.FC = () => {
-  const [localTeamNames, setLocalTeamNames] = useState(["Team 1", "Team 2"]);
-  const [localPlayerNames, setLocalPlayerNames] = useState([
-    ["Rupesh", "Shubham"],
-    ["Ravi", "Parshya"],
-  ]);
-  const [editingTeamIndex, setEditingTeamIndex] = useState<number | null>(null);
-  const [shuffling, setShuffling] = useState<boolean>(false);
-
   const {
     setTeam1Name,
     setTeam1Players,
@@ -35,7 +27,17 @@ const TeamFormScreen: React.FC = () => {
     teamGameStarted,
     isTeamLP,
     setIsTeamLP,
+    team1Players,
+    team2Players,
   } = useGameStore();
+
+  const [localTeamNames, setLocalTeamNames] = useState(["Team 1", "Team 2"]);
+  const [localPlayerNames, setLocalPlayerNames] = useState([
+    team1Players,
+    team2Players,
+  ]);
+  const [editingTeamIndex, setEditingTeamIndex] = useState<number | null>(null);
+  const [shuffling, setShuffling] = useState<boolean>(false);
 
   const nextInputRef = useRef<(TextInput | null)[][]>([
     [null, null],
@@ -62,6 +64,16 @@ const TeamFormScreen: React.FC = () => {
       copy[teamIndex][playerIndex] = cleanedValue;
       return copy;
     });
+
+    if (teamIndex === 0) {
+      const updated = [...team1Players];
+      updated[playerIndex] = cleanedValue;
+      setTeam1Players(updated);
+    } else {
+      const updated = [...team2Players];
+      updated[playerIndex] = cleanedValue;
+      setTeam2Players(updated);
+    }
   };
 
   const shufflePlayers = () => {

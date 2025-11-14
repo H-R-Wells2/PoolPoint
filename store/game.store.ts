@@ -112,10 +112,10 @@ export const useGameStore = create<GameState>()(
     (set, get) => ({
       /* ----- Initial game state ----- */
       team1Name: "Team 1",
-      team1Players: ["Player 1", "Player 2"],
+      team1Players: ["Rupesh", "Parshya"],
       team1Scores: [0, 0],
       team2Name: "Team 2",
-      team2Players: ["Player 1", "Player 2"],
+      team2Players: ["Akash", "Shubham"],
       team2Scores: [0, 0],
       teamGameStarted: false,
       teamTimerSeconds: 0,
@@ -199,7 +199,7 @@ export const useGameStore = create<GameState>()(
           playerScores: {},
           gameTimerSeconds: 0,
           gameTimerInterval: interval as unknown as number,
-          scoreHistory: []
+          scoreHistory: [],
         });
       },
 
@@ -229,7 +229,7 @@ export const useGameStore = create<GameState>()(
           team2Scores: [0, 0],
           teamTimerSeconds: 0,
           teamTimerInterval: interval as unknown as number,
-          teamScoreHistory: []
+          teamScoreHistory: [],
         });
       },
 
@@ -239,10 +239,10 @@ export const useGameStore = create<GameState>()(
         set({
           teamGameStarted: false,
           team1Name: "Team 1",
-          team1Players: ["Shubham", "Parshya"],
+          // team1Players: ["Shubham", "Parshya"],
           team1Scores: [0, 0],
           team2Name: "Team 2",
-          team2Players: ["Ravi", "Rupesh"],
+          // team2Players: ["Ravi", "Rupesh"],
           team2Scores: [0, 0],
           teamTimerSeconds: 0,
           teamTimerInterval: null,
@@ -304,6 +304,9 @@ export const useGameStore = create<GameState>()(
         totalTableAmount: state.totalTableAmount,
         isLP: state.isLP,
         isTeamLP: state.isTeamLP,
+
+        team1Players: state.team1Players,
+        team2Players: state.team2Players,
       }),
     }
   )
