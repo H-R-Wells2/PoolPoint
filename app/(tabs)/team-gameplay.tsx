@@ -198,6 +198,7 @@ const TeamGamePlay = () => {
                     <TeamPlayerCard
                       name={team1Name}
                       players={team1Players}
+                       playersAll={[...team1Players, ...team2Players]}
                       scores={team1Scores}
                       setScores={setTeam1Scores}
                       onPlayerNameChange={(index: number, newName: string) => {
@@ -210,6 +211,7 @@ const TeamGamePlay = () => {
                     <TeamPlayerCard
                       name={team2Name}
                       players={team2Players}
+                      playersAll={[...team1Players, ...team2Players]} 
                       scores={team2Scores}
                       setScores={setTeam2Scores}
                       onPlayerNameChange={(index: number, newName: string) => {

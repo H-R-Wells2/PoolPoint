@@ -5,7 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function _layout() {
   return (
-    <SafeAreaView className="flex-1 bg-[#111827]">
+    <SafeAreaView className="flex-1 bg-[#111827]" edges={["top"]}>
       <FlashMessage position="top" statusBarHeight={28} />
       <Header />
       <Slot />

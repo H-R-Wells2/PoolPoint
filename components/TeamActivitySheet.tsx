@@ -13,8 +13,9 @@ const TeamActivitySheet = React.forwardRef<BottomSheetModal>((_, ref) => {
   return (
     <BottomSheetModal
       ref={ref}
-      snapPoints={["40%"]}
+      snapPoints={["40%", "70%"]}
       enablePanDownToClose
+      enableDynamicSizing={false}
       backdropComponent={({ style }) => (
         <View
           style={[style, { backgroundColor: "rgba(0,0,0,0.45)", flex: 1 }]}
@@ -88,16 +89,16 @@ const TeamActivitySheet = React.forwardRef<BottomSheetModal>((_, ref) => {
             flexDirection: "row",
             flexWrap: "wrap",
             justifyContent: "flex-start",
-            gap: 10,
+            columnGap: "3.5%",
+            rowGap: 12
           }}
         >
           {latestLogs.length === 0 ? (
             <View
               style={{
-                paddingVertical: 50,
+                paddingVertical: 70,
                 alignItems: "center",
                 width: "100%",
-                paddingBottom: 80,
               }}
             >
               <Ionicons

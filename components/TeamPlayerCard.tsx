@@ -8,6 +8,7 @@ import {
   Vibration,
   View,
 } from "react-native";
+import { showMessage } from "react-native-flash-message";
 
 interface Props {
   name: string;
@@ -15,6 +16,7 @@ interface Props {
   scores: number[];
   setScores: (scores: number[]) => void;
   onPlayerNameChange?: (index: number, newName: string) => void;
+  playersAll: string[];
 }
 
 const TeamPlayerCard = ({
@@ -23,6 +25,7 @@ const TeamPlayerCard = ({
   scores,
   setScores,
   onPlayerNameChange,
+  playersAll,
 }: Props) => {
   const { addTeamScoreEvent } = useGameStore();
 
@@ -44,12 +47,40 @@ const TeamPlayerCard = ({
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editedName, setEditedName] = useState<string>("");
 
+  const isDuplicate = (name: string, index: number) => {
+    const cleaned = name.trim().toLowerCase();
+
+    return playersAll.some((n, i) => {
+      if (!n) return false;
+      return (
+        n.trim().toLowerCase() === cleaned &&
+        !(players?.[index].toLowerCase() === cleaned)
+      );
+    });
+  };
+
+  const generateUniqueName = (baseName: string) => {
+    let cleaned = baseName.trim();
+    let finalName = cleaned;
+    let counter = 1;
+
+    while (
+      playersAll
+        .map((n) => n.toLowerCase().trim())
+        .includes(finalName.toLowerCase())
+    ) {
+      finalName = `${cleaned}${counter}`;
+      counter++;
+    }
+
+    return finalName;
+  };
+
   return (
     <View className="w-full bg-slate-800 rounded-xl border border-gray-900 overflow-hidden pb-3">
       <View className="flex flex-row justify-between items-center w-full px-3 bg-slate-700 py-2">
         <Text
           className="text-white text-2xl font-semibold"
-          // style={{ fontFamily: "Inter_500Medium" }}
         >
           {name}
         </Text>
@@ -67,26 +98,76 @@ const TeamPlayerCard = ({
           <View className="flex-row justify-between items-center pb-1.5">
             <View className="flex-1 flex-row items-center gap-2">
               {editingIndex === index ? (
-                <TextInput
-                  className="text-xl text-white font-normal border-b border-teal-500"
-                  style={{
-                    fontFamily: "Inter_500Medium",
-                    paddingVertical: 0,
-                    lineHeight: 35,
-                  }}
-                  value={editedName}
-                  onChangeText={setEditedName}
-                  autoFocus
-                  onBlur={() => {
-                    onPlayerNameChange?.(index, editedName);
-                    setEditingIndex(null);
-                  }}
-                  onSubmitEditing={() => {
-                    onPlayerNameChange?.(index, editedName);
-                    setEditingIndex(null);
-                  }}
-                  returnKeyType="done"
-                />
+                <>
+                  <TextInput
+                    className="text-xl text-white font-normal border-b border-teal-500"
+                    style={{
+                      fontFamily: "Inter_500Medium",
+                      paddingVertical: 0,
+                      lineHeight: 35,
+                    }}
+                    value={editedName}
+                    onChangeText={(text) => {
+                      const cleaned = text.replace(/[^A-Za-z0-9]/g, "");
+                      setEditedName(cleaned);
+                    }}
+                    autoFocus
+                    onBlur={() => {
+                      let finalName = editedName.trim();
+
+                      if (finalName.length === 0) {
+                        finalName = `Player${index + 1}`;
+                      }
+
+                      if (isDuplicate(finalName, index)) {
+                        showMessage({
+                          message: "Duplicate name",
+                          description:
+                            "This name already exists, so we adjusted it.",
+                          type: "danger",
+                          backgroundColor: "#ef4444",
+                          color: "white",
+                        });
+
+                        finalName = generateUniqueName(finalName);
+                      }
+
+                      onPlayerNameChange?.(index, finalName);
+                      setEditingIndex(null);
+                    }}
+                    onSubmitEditing={() => {
+                      let finalName = editedName.trim();
+
+                      // 1️⃣ If blank → fallback
+                      if (finalName.length === 0) {
+                        finalName = `Player ${index + 1}`;
+                      }
+
+                      // 2️⃣ If duplicate → auto-correct
+                      if (isDuplicate(finalName, index)) {
+                        showMessage({
+                          message: "Duplicate name",
+                          description:
+                            "This name already exists, so we adjusted it.",
+                          type: "danger",
+                          backgroundColor: "#ef4444",
+                          color: "white",
+                        });
+
+                        finalName = generateUniqueName(finalName);
+                      }
+
+                      onPlayerNameChange?.(index, finalName);
+                      setEditingIndex(null);
+                    }}
+                    returnKeyType="done"
+                  />
+                  {editingIndex === index && isDuplicate(editedName, index) && (
+                    <Text className="text-red-400 mt-1 text-sm">
+                      This name already exists
+                    </Text>
+                  )}
+                </>
               ) : (
                 <Text
                   className="text-xl text-white"
@@ -248,8 +329,6 @@ const TeamPlayerCard = ({
           </View>
         </View>
       ))}
-
-      {/* Team 2 */}
     </View>
   );
 };
