@@ -1,38 +1,43 @@
 import { useGameStore } from "@/store/game.store";
 import { Ionicons } from "@expo/vector-icons";
 import { BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
+import { BlurView } from "expo-blur";
 import React from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 
 const TeamActivitySheet = React.forwardRef<BottomSheetModal>((_, ref) => {
   const { teamScoreHistory } = useGameStore();
 
+  const latestLogs = teamScoreHistory.slice(-12).reverse();
+
   return (
     <BottomSheetModal
       ref={ref}
-      snapPoints={["60%", "85%"]}
+      snapPoints={["40%"]}
       enablePanDownToClose
       backdropComponent={({ style }) => (
         <View
-          style={[
-            style,
-            { backgroundColor: "rgba(0,0,0,0.5)", flex: 1 },
-          ]}
+          style={[style, { backgroundColor: "rgba(0,0,0,0.45)", flex: 1 }]}
         />
       )}
       backgroundStyle={{
         backgroundColor: "#111827",
-        borderTopLeftRadius: 24,
-        borderTopRightRadius: 24,
+        borderTopLeftRadius: 26,
+        borderTopRightRadius: 26,
       }}
-      handleIndicatorStyle={{ backgroundColor: "#d1d5db", width: 50 }}
+      handleIndicatorStyle={{
+        backgroundColor: "#64748b",
+        width: 60,
+        height: 5,
+        borderRadius: 4,
+      }}
     >
       <BottomSheetView
         style={{
           flex: 1,
-          paddingHorizontal: 20,
-          paddingVertical: 12,
-          justifyContent: "flex-start",
+          paddingHorizontal: 18,
+          paddingTop: 10,
+          paddingBottom: 6,
         }}
       >
         {/* Header */}
@@ -41,138 +46,147 @@ const TeamActivitySheet = React.forwardRef<BottomSheetModal>((_, ref) => {
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
-            marginBottom: 16,
+            marginBottom: 12,
           }}
         >
-          <Text
+          <View
             style={{
-              fontSize: 20,
-              fontWeight: "600",
-              color: "#ffffff",
-              fontFamily: "Poppins_600SemiBold",
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 8,
             }}
           >
-            🎯 Recent Points
-          </Text>
+            <Ionicons name="stats-chart-outline" size={22} color="#38bdf8" />
+
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: "700",
+                color: "#f8fafc",
+                letterSpacing: 0.3,
+              }}
+            >
+              Recent Points
+            </Text>
+          </View>
 
           <TouchableOpacity
             onPress={() => (ref as any)?.current?.dismiss()}
             style={{
-              backgroundColor: "#f1f5f9",
-              borderRadius: 20,
+              backgroundColor: "rgba(255,255,255,0.1)",
+              borderRadius: 50,
               padding: 6,
             }}
           >
-            <Ionicons name="close" size={20} color="#0f172a" />
+            <Ionicons name="close" size={20} color="#e2e8f0" />
           </TouchableOpacity>
         </View>
 
-        {/* Activity List */}
-        <ScrollView
-          style={{ flex: 1, maxHeight: "85%" }}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 16 }}
+        {/* GRID */}
+        <View
+          style={{
+            flexDirection: "row",
+            flexWrap: "wrap",
+            justifyContent: "flex-start",
+            gap: 10,
+          }}
         >
-          {teamScoreHistory.length === 0 ? (
+          {latestLogs.length === 0 ? (
             <View
               style={{
-                paddingVertical: 40,
+                paddingVertical: 50,
                 alignItems: "center",
-                justifyContent: "center",
+                width: "100%",
+                paddingBottom: 80,
               }}
             >
               <Ionicons
                 name="time-outline"
-                size={36}
+                size={28}
                 color="#64748b"
                 style={{ marginBottom: 8 }}
               />
-              <Text
-                style={{
-                  color: "#94a3b8",
-                  fontSize: 15,
-                  fontFamily: "Poppins_400Regular",
-                }}
-              >
-                Khel to pehle BSDK! 😭
+              <Text style={{ color: "#94a3b8", fontSize: 15 }}>
+                Pehle khel to sahi bhosdike!
               </Text>
             </View>
           ) : (
-            teamScoreHistory
-              .slice()
-              .reverse()
-              .map((log, index) => (
-                <View
-                  key={index}
+            latestLogs.map((log, index) => (
+              <BlurView
+                key={index}
+                intensity={20}
+                tint="dark"
+                style={{
+                  width: "31%",
+                  borderRadius: 14,
+                  paddingVertical: 10,
+                  paddingHorizontal: 12,
+                  borderWidth: 0,
+                  borderColor: "#1e293b",
+                  backgroundColor: "#1e293b",
+                }}
+              >
+                <Text
                   style={{
-                    backgroundColor: "#1e293b",
-                    borderRadius: 12,
-                    paddingVertical: 12,
-                    paddingHorizontal: 16,
-                    marginBottom: 10,
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
+                    color: "#f8fafc",
+                    fontSize: 13,
+                    fontWeight: "600",
                   }}
                 >
-                  <View style={{ flex: 1 }}>
-                    {/* Player Name */}
-                    <Text
-                      style={{
-                        color: "#f8fafc",
-                        fontSize: 16,
-                        fontWeight: "600",
-                        fontFamily: "Poppins_600SemiBold",
-                      }}
-                    >
-                      {log.playerName}
-                    </Text>
+                  {log.playerName}
+                </Text>
 
-                    {/* Team Name */}
-                    <Text
-                      style={{
-                        color: "#38bdf8",
-                        fontSize: 13,
-                        marginTop: 2,
-                        fontFamily: "Poppins_400Regular",
-                      }}
-                    >
-                      {log.teamName}
-                    </Text>
+                <Text
+                  style={{
+                    color: "#38bdf8",
+                    fontSize: 11,
+                    marginTop: 2,
+                  }}
+                >
+                  {log.teamName}
+                </Text>
 
-                    {/* Timestamp */}
-                    <Text
-                      style={{
-                        color: "#94a3b8",
-                        fontSize: 12,
-                        marginTop: 2,
-                        fontFamily: "Poppins_400Regular",
-                      }}
-                    >
-                      {new Date(log.timestamp).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </Text>
-                  </View>
-
-                  {/* Points Display */}
+                <View
+                  style={{
+                    marginTop: 6,
+                    backgroundColor:
+                      log.pointsChanged > 0
+                        ? "rgba(34,197,94,0.25)"
+                        : "rgba(239,68,68,0.25)",
+                    paddingVertical: 3,
+                    paddingHorizontal: 8,
+                    borderRadius: 8,
+                    alignSelf: "flex-start",
+                  }}
+                >
                   <Text
                     style={{
-                      color:
-                        log.pointsChanged > 0 ? "#22c55e" : "#ef4444",
-                      fontSize: 18,
+                      color: log.pointsChanged > 0 ? "#4ade80" : "#f87171",
+                      fontSize: 14,
                       fontWeight: "700",
-                      fontFamily: "Poppins_600SemiBold",
                     }}
                   >
                     {log.pointsChanged > 0 ? "+" : ""}
                     {log.pointsChanged}
                   </Text>
                 </View>
-              ))
+
+                <Text
+                  style={{
+                    color: "#94a3b8",
+                    fontSize: 10,
+                    marginTop: 6,
+                  }}
+                >
+                  {new Date(log.timestamp).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </Text>
+              </BlurView>
+            ))
           )}
-        </ScrollView>
+        </View>
       </BottomSheetView>
     </BottomSheetModal>
   );

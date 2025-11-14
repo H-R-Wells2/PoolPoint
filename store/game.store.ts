@@ -199,6 +199,7 @@ export const useGameStore = create<GameState>()(
           playerScores: {},
           gameTimerSeconds: 0,
           gameTimerInterval: interval as unknown as number,
+          scoreHistory: []
         });
       },
 
@@ -228,6 +229,7 @@ export const useGameStore = create<GameState>()(
           team2Scores: [0, 0],
           teamTimerSeconds: 0,
           teamTimerInterval: interval as unknown as number,
+          teamScoreHistory: []
         });
       },
 
